@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
+import { loadKakaoMapSdk } from '../utils/kakaoMap';
 import { MY_SPACE, nextId, grad } from '../data/mock';
 
 const DEFAULT_QUERY = '미오 성수';
@@ -21,26 +22,32 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
   }, [initialQuery]);
 
   useEffect(() => {
-    const initializeMap = () => {
-      if (!mapRef.current) return;
-      if (!window.kakao?.maps) {
-        window.setTimeout(initializeMap, 250);
-        return;
-      }
+    let cancelled = false;
 
-      window.kakao.maps.load(() => {
-        const map = new window.kakao.maps.Map(mapRef.current, {
-          center: new window.kakao.maps.LatLng(37.5445, 127.0558),
-          level: 4,
+    const initializeMap = async () => {
+      if (!mapRef.current) return;
+      try {
+        const kakaoMaps = await loadKakaoMapSdk();
+        if (cancelled || !mapRef.current) return;
+
+        kakaoMaps.load(() => {
+          const map = new kakaoMaps.Map(mapRef.current, {
+            center: new kakaoMaps.LatLng(37.5445, 127.0558),
+            level: 4,
+          });
+          mapInstanceRef.current = map;
+          searchPlaces(initialQuery, map);
         });
-        mapInstanceRef.current = map;
-        searchPlaces(initialQuery, map);
-      });
+      } catch (err) {
+        console.error(err);
+        setError('카카오맵 SDK를 불러오지 못했습니다. 환경 변수 설정을 확인해주세요.');
+      }
     };
 
     initializeMap();
 
     return () => {
+      cancelled = true;
       markersRef.current.forEach((marker) => marker.setMap(null));
       markersRef.current = [];
       mapInstanceRef.current = null;

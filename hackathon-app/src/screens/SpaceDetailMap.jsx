@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator, Avatar } from '../components/Chrome';
+import { loadKakaoMapSdk } from '../utils/kakaoMap';
 import { DetailTabs } from '../components/TabBar';
 import { ManageBtn, MemberManageModal } from '../components/SpaceHeader';
 import { placesSeongsu, members } from '../data/mock';
@@ -31,54 +32,58 @@ export default function SpaceDetailMap({ space, mine = false }) {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const initializeMap = () => {
-      const kakaoMaps = window.kakao?.maps;
-      if (!kakaoMaps?.Map || !kakaoMaps?.LatLng || !kakaoMaps?.Marker || !kakaoMaps?.InfoWindow || !kakaoMaps?.LatLngBounds) {
-        window.setTimeout(initializeMap, 300);
-        return;
+    let cancelled = false;
+
+    const initializeMap = async () => {
+      try {
+        const kakaoMaps = await loadKakaoMapSdk();
+        if (cancelled || !mapRef.current) return;
+
+        kakaoMaps.load(() => {
+          const container = mapRef.current;
+          if (!container || cancelled) return;
+
+          const map = new kakaoMaps.Map(container, {
+            center: new kakaoMaps.LatLng(PINS[0].lat, PINS[0].lng),
+            level: 4,
+            draggable: true,
+            scrollwheel: true,
+          });
+
+          mapInstanceRef.current = map;
+          markersRef.current = PINS.map((pin, index) => {
+            const position = new kakaoMaps.LatLng(pin.lat, pin.lng);
+            const marker = new kakaoMaps.Marker({
+              map,
+              position,
+              title: pin.name,
+            });
+
+            const infoWindow = new kakaoMaps.InfoWindow({
+              content: `<div style="padding:8px 10px;font-size:12px;font-weight:700;color:#111;">${pin.name}</div>`,
+            });
+
+            kakaoMaps.event.addListener(marker, 'click', () => {
+              setSelected(index);
+              infoWindow.open(map, marker);
+            });
+
+            return { marker, infoWindow };
+          });
+
+          const bounds = new kakaoMaps.LatLngBounds();
+          PINS.forEach((pin) => bounds.extend(new kakaoMaps.LatLng(pin.lat, pin.lng)));
+          map.setBounds(bounds);
+        });
+      } catch (err) {
+        console.error(err);
       }
-
-      kakaoMaps.load(() => {
-        const container = mapRef.current;
-        if (!container) return;
-
-        const map = new kakaoMaps.Map(container, {
-          center: new kakaoMaps.LatLng(PINS[0].lat, PINS[0].lng),
-          level: 4,
-          draggable: true,
-          scrollwheel: true,
-        });
-
-        mapInstanceRef.current = map;
-        markersRef.current = PINS.map((pin, index) => {
-          const position = new kakaoMaps.LatLng(pin.lat, pin.lng);
-          const marker = new kakaoMaps.Marker({
-            map,
-            position,
-            title: pin.name,
-          });
-
-          const infoWindow = new kakaoMaps.InfoWindow({
-            content: `<div style="padding:8px 10px;font-size:12px;font-weight:700;color:#111;">${pin.name}</div>`,
-          });
-
-          kakaoMaps.event.addListener(marker, 'click', () => {
-            setSelected(index);
-            infoWindow.open(map, marker);
-          });
-
-          return { marker, infoWindow };
-        });
-
-        const bounds = new kakaoMaps.LatLngBounds();
-        PINS.forEach((pin) => bounds.extend(new kakaoMaps.LatLng(pin.lat, pin.lng)));
-        map.setBounds(bounds);
-      });
     };
 
     initializeMap();
 
     return () => {
+      cancelled = true;
       markersRef.current.forEach(({ infoWindow }) => infoWindow.close());
       markersRef.current = [];
       mapInstanceRef.current = null;
