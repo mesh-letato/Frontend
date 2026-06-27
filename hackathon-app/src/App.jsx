@@ -12,7 +12,6 @@ import SpaceLog from './screens/SpaceLog';
 import PlaceDetail from './screens/PlaceDetail';
 import WriteReview from './screens/WriteReview';
 import FriendLogDetail from './screens/FriendLogDetail';
-import MySpace from './screens/MySpace';
 import LinkAnalyzing from './screens/LinkAnalyzing';
 import PlaceSelect from './screens/PlaceSelect';
 import ShareImport from './screens/ShareImport';
@@ -29,7 +28,6 @@ const SCREENS = {
   placeDetail: PlaceDetail,
   writeReview: WriteReview,
   friendLog: FriendLogDetail,
-  myspace: MySpace,
   linkAnalyzing: LinkAnalyzing,
   placeSelect: PlaceSelect,
   shareImport: ShareImport,
