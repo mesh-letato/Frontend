@@ -1,15 +1,8 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.container {
-  padding: 40px;
-}
-
-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+/* 핀모아 — 화면별 인라인 스타일을 주로 사용. 공통 클래스만 여기 둔다. */
+.pm-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }

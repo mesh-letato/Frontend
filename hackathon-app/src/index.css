@@ -1,111 +1,66 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+* { box-sizing: border-box; }
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 body {
-  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #050507;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
 }
 
+/* 데스크탑에서는 휴대폰 프레임처럼, 모바일에서는 전체화면 */
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
   display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+.pm-device {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  max-height: 932px;
+  background: #0D0D0F;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+@media (min-width: 460px) {
+  #root { padding: 20px; }
+  .pm-device {
+    border-radius: 44px;
+    box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 10px #1a1a1d, 0 0 0 11px #2a2a2e;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+/* 화면 전환 애니메이션 */
+.pm-fade { animation: pmFade .28s ease; }
+@keyframes pmFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.pm-slide { animation: pmSlide .3s cubic-bezier(.3,.8,.3,1); }
+@keyframes pmSlide { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+.pm-up { animation: pmUp .32s cubic-bezier(.2,.85,.25,1); }
+@keyframes pmUp { from { transform: translateY(100%); } to { transform: none; } }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
+@keyframes pmSpin { to { transform: rotate(360deg); } }
+@keyframes pmShimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+@keyframes pmPulse { 0% { transform: translateX(-50%) scale(.7); opacity:.5; } 70% { opacity:0; } 100% { transform: translateX(-50%) scale(2); opacity:0; } }
+@keyframes pmBar { from { width: 6%; } to { width: 92%; } }
+@keyframes pmPop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* 스크롤바 숨김 (모바일 느낌) */
+.pm-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.pm-scroll::-webkit-scrollbar { display: none; }
+
+input { font-family: inherit; }
+button { font-family: inherit; cursor: pointer; }
+.pm-tap { cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; }
+.pm-tap:active { opacity: .75; }
