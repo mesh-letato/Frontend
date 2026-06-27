@@ -39,7 +39,7 @@ function Toast() {
   const { toast } = useNav();
   if (!toast) return null;
   return (
-    <div style={{ position: 'absolute', bottom: 110, left: '50%', transform: 'translateX(-50%)', zIndex: 300, background: 'rgba(28,28,32,.96)', backdropFilter: 'blur(10px)', borderRadius: 14, padding: '12px 18px', font: '700 13px/1.3 system-ui', color: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,.5)', maxWidth: '80%', textAlign: 'center', animation: 'pmPop .25s ease' }}>
+    <div style={{ position: 'absolute', bottom: 110, left: '50%', transform: 'translateX(-50%)', zIndex: 300, background: 'rgba(28,28,32,.96)', backdropFilter: 'blur(10px)', borderRadius: 14, padding: '12px 18px', font: '700 13px/1.3 Pinmoa, system-ui', color: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,.5)', maxWidth: '80%', textAlign: 'center', animation: 'pmPop .25s ease' }}>
       {toast}
     </div>
   );

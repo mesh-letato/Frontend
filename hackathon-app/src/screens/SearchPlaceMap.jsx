@@ -169,15 +169,15 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
       <StatusBar />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px 0', zIndex: 20 }}>
         <BackBtn onClick={back} />
-        <div style={{ font: '800 18px/1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>장소 검색</div>
+        <div style={{ font: '800 18px/1 Pinmoa, system-ui', letterSpacing: '-.4px', color: '#fff' }}>장소 검색</div>
         <div style={{ width: 36, height: 36 }} />
       </div>
 
       <div style={{ position: 'relative', margin: '12px 16px 0', zIndex: 20 }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 16, padding: '12px 14px' }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="rgba(255,255,255,.55)" strokeWidth="2" /><path d="M20 20l-3.5-3.5" stroke="rgba(255,255,255,.55)" strokeWidth="2" strokeLinecap="round" /></svg>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="예: 미오 성수" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', font: '500 15px/1 system-ui', color: '#fff' }} />
-          <button type="submit" style={{ background: '#2997ff', color: '#fff', border: 'none', borderRadius: 9999, padding: '8px 12px', font: '700 13px/1 system-ui' }}>{loading ? '검색중' : '검색'}</button>
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="예: 미오 성수" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', font: '500 15px/1 Pinmoa, system-ui', color: '#fff' }} />
+          <button type="submit" style={{ background: '#2997ff', color: '#fff', border: 'none', borderRadius: 9999, padding: '8px 12px', font: '700 13px/1 Pinmoa, system-ui' }}>{loading ? '검색중' : '검색'}</button>
         </form>
       </div>
 
@@ -186,14 +186,14 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
       <div style={{ position: 'absolute', left: 16, right: 16, bottom: 24, zIndex: 20 }}>
         <div style={{ background: 'rgba(24,24,27,.95)', backdropFilter: 'blur(16px)', borderRadius: 24, padding: 14, boxShadow: '0 16px 44px rgba(0,0,0,.45)' }}>
           {error ? (
-            <div style={{ font: '600 13px/1.4 system-ui', color: '#ff7a7a' }}>{error}</div>
+            <div style={{ font: '600 13px/1.4 Pinmoa, system-ui', color: '#ff7a7a' }}>{error}</div>
           ) : selectedPlace ? (
             <>
-              <div style={{ font: '800 17px/1.1 system-ui', color: '#fff', marginBottom: 4 }}>{selectedPlace.name}</div>
-              <div style={{ font: '500 12.5px/1.4 system-ui', color: '#8d8d95', marginBottom: 8 }}>{selectedPlace.address}</div>
+              <div style={{ font: '800 17px/1.1 Pinmoa, system-ui', color: '#fff', marginBottom: 4 }}>{selectedPlace.name}</div>
+              <div style={{ font: '500 12.5px/1.4 Pinmoa, system-ui', color: '#8d8d95', marginBottom: 8 }}>{selectedPlace.address}</div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {results.map((place) => (
-                  <button key={place.id} type="button" onClick={() => setSelectedId(place.id)} style={{ background: selectedPlace.id === place.id ? '#2997ff' : 'rgba(255,255,255,.08)', color: '#fff', border: 'none', borderRadius: 9999, padding: '8px 10px', font: '700 12px/1 system-ui' }}>
+                  <button key={place.id} type="button" onClick={() => setSelectedId(place.id)} style={{ background: selectedPlace.id === place.id ? '#2997ff' : 'rgba(255,255,255,.08)', color: '#fff', border: 'none', borderRadius: 9999, padding: '8px 10px', font: '700 12px/1 Pinmoa, system-ui' }}>
                     {place.name}
                   </button>
                 ))}
@@ -201,7 +201,7 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
             </>
           ) : null}
 
-          <button type="button" onClick={handleSave} disabled={!selectedPlace} style={{ marginTop: 12, width: '100%', border: 'none', borderRadius: 16, padding: '13px 0', background: selectedPlace ? '#fff' : 'rgba(255,255,255,.15)', color: selectedPlace ? '#0D0D0F' : '#8d8d95', font: '800 15px/1 system-ui' }}>
+          <button type="button" onClick={handleSave} disabled={!selectedPlace} style={{ marginTop: 12, width: '100%', border: 'none', borderRadius: 16, padding: '13px 0', background: selectedPlace ? '#fff' : 'rgba(255,255,255,.15)', color: selectedPlace ? '#0D0D0F' : '#8d8d95', font: '800 15px/1 Pinmoa, system-ui' }}>
             내 스페이스에 저장
           </button>
         </div>

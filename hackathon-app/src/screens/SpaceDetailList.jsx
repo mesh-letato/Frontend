@@ -20,7 +20,7 @@ export default function SpaceDetailList({ space, mine = false }) {
           onList={() => {}}
           onLog={() => replace('spaceLog', { space, mine })}
         />
-        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>{mine ? '📍 최근 저장순' : '🔥 많이 겹친 순'}</div>
+        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 Pinmoa, system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>{mine ? '📍 최근 저장순' : '🔥 많이 겹친 순'}</div>
       </div>
 
       {/* 스크롤 영역 (장소들만) */}
@@ -41,12 +41,12 @@ function MyPlaceRow({ p, onTap }) {
   return (
     <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
       <div style={{ position: 'relative', width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.thumb }}>
-        {p.count && <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 10px/1 system-ui', color: '#fff' }}>{p.count}명</div>}
-        {p.isNew && <div style={{ position: 'absolute', right: -4, top: -6, background: '#30d158', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 9px/1 system-ui', color: '#0D0D0F' }}>NEW</div>}
+        {p.count && <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 10px/1 Pinmoa, system-ui', color: '#fff' }}>{p.count}명</div>}
+        {p.isNew && <div style={{ position: 'absolute', right: -4, top: -6, background: '#30d158', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 9px/1 Pinmoa, system-ui', color: '#0D0D0F' }}>NEW</div>}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ font: '800 16px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-        <div style={{ marginTop: 4, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
+        <div style={{ font: '800 16px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+        <div style={{ marginTop: 4, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
       </div>
     </div>
   );
@@ -61,11 +61,11 @@ function PlaceRow({ p, hot, onTap }) {
         <div style={{ display: 'flex', gap: 13 }}>
           <Thumb p={p} size={72} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '800 17px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-            <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
+            <div style={{ font: '800 17px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+            <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
             <div style={{ marginTop: 9, display: 'flex', alignItems: 'center', gap: 7 }}>
               <div style={{ display: 'flex' }}>{saverAvatars.map((m, i) => <div key={i} style={{ width: 20, height: 20, borderRadius: '50%', border: '1.5px solid #18181B', background: m.color, marginLeft: i === 0 ? 0 : -6 }} />)}</div>
-              <span style={{ font: '700 11px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
+              <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
             </div>
           </div>
         </div>
@@ -73,10 +73,10 @@ function PlaceRow({ p, hot, onTap }) {
         <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 9, background: '#0D0D0F', borderRadius: 14, padding: '9px 11px' }}>
           <div style={{ width: 34, height: 34, borderRadius: 8, background: 'radial-gradient(circle at 40% 30%,#ffe0bd,transparent),linear-gradient(150deg,#e89a5a,#7a2e22)', flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '700 12px/1.2 system-ui', color: '#fff' }}>{p.reviewer}이 다녀왔어요</div>
-            <div style={{ marginTop: 3, font: "600 11.5px/1.2 'Caveat',cursive", color: 'rgba(255,255,255,.65)' }}>{p.review}</div>
+            <div style={{ font: '700 12px/1.2 Pinmoa, system-ui', color: '#fff' }}>{p.reviewer}이 다녀왔어요</div>
+            <div style={{ marginTop: 3, font: "600 11.5px/1.2 Pinmoa, system-ui", color: 'rgba(255,255,255,.65)' }}>{p.review}</div>
           </div>
-          <span style={{ font: '700 17px/1 system-ui' }}>📸</span>
+          <span style={{ font: '700 17px/1 Pinmoa, system-ui' }}>📸</span>
         </div>
       </div>
     );
@@ -88,11 +88,11 @@ function PlaceRow({ p, hot, onTap }) {
         <div style={{ display: 'flex', gap: 13 }}>
           <Thumb p={p} size={72} blue={false} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '800 17px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-            <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
+            <div style={{ font: '800 17px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+            <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
             <div style={{ marginTop: 9, display: 'flex', alignItems: 'center', gap: 7 }}>
               <div style={{ display: 'flex' }}>{saverAvatars.map((m, i) => <div key={i} style={{ width: 20, height: 20, borderRadius: '50%', border: '1.5px solid #18181B', background: m.color, marginLeft: i === 0 ? 0 : -6 }} />)}</div>
-              <span style={{ font: '700 11px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
+              <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
             </div>
           </div>
         </div>
@@ -104,12 +104,12 @@ function PlaceRow({ p, hot, onTap }) {
     <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
       <div style={{ width: 60, height: 60, borderRadius: 14, flexShrink: 0, background: p.thumb }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ font: '800 16px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-        <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
+        <div style={{ font: '800 16px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+        <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-        <div style={{ width: 22, height: 22, borderRadius: '50%', background: members.doyoon.color, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 system-ui', color: '#fff' }}>도윤</div>
-        <span style={{ font: '700 11px/1 system-ui', color: '#6a6a70' }}>{p.count}명</span>
+        <div style={{ width: 22, height: 22, borderRadius: '50%', background: members.doyoon.color, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 Pinmoa, system-ui', color: '#fff' }}>도윤</div>
+        <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.count}명</span>
       </div>
     </div>
   );
@@ -119,7 +119,7 @@ function Thumb({ p, size }) {
   return (
     <div style={{ position: 'relative', width: size, height: size, borderRadius: 16, flexShrink: 0, background: p.thumb }}>
       <div style={{ position: 'absolute', left: -4, top: -6, background: p.count >= 4 ? '#2997ff' : '#1c1c20', border: '2px solid #18181B', borderRadius: 9999, padding: '3px 8px' }}>
-        <span style={{ font: '800 11px/1 system-ui', color: '#fff' }}>{p.count}명</span>
+        <span style={{ font: '800 11px/1 Pinmoa, system-ui', color: '#fff' }}>{p.count}명</span>
       </div>
     </div>
   );

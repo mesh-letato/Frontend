@@ -125,14 +125,14 @@ export default function SpaceDetailMap({ space, mine = false }) {
       <div style={{ position: 'absolute', top: 62, left: 14, right: 14, zIndex: 20, background: 'rgba(24,24,27,.82)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: '12px 15px', boxShadow: '0 8px 24px rgba(0,0,0,.4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
           <BackBtn onClick={back} />
-          <div style={{ flex: 1, font: '800 17px/1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{space?.name || '성수 맛집 🍝'}</div>
+          <div style={{ flex: 1, font: '800 17px/1 Pinmoa, system-ui', letterSpacing: '-.4px', color: '#fff' }}>{space?.name || '성수 맛집 🍝'}</div>
           {mine ? (
             <Avatar m={members.me} size={28} border="#18181B" />
           ) : (
             <>
               <div style={{ display: 'flex' }}>
                 {['me', 'jiyoon', 'doyoon'].map((k, i) => <Avatar key={k} m={members[k]} size={28} border="#18181B" ml={i === 0 ? 0 : -9} />)}
-                <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 system-ui', color: '#fff' }}>+2</div>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 Pinmoa, system-ui', color: '#fff' }}>+2</div>
               </div>
               <ManageBtn onClick={() => setManage(true)} />
             </>
@@ -143,11 +143,11 @@ export default function SpaceDetailMap({ space, mine = false }) {
           {[['me', '나'], ['jiyoon', '지윤'], ['doyoon', '도윤']].map(([k, label]) => (
             <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <div style={{ width: 9, height: 9, borderRadius: '50%', background: members[k].color }} />
-              <span style={{ font: '700 10.5px/1 system-ui', color: 'rgba(255,255,255,.7)' }}>{label}</span>
+              <span style={{ font: '700 10.5px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.7)' }}>{label}</span>
             </div>
           ))}
           <div style={{ width: 1, height: 11, background: 'rgba(255,255,255,.15)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ font: '700 11px/1 system-ui' }}>🔥</span><span style={{ font: '700 10.5px/1 system-ui', color: 'rgba(255,255,255,.7)' }}>여러명 겹침</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ font: '700 11px/1 Pinmoa, system-ui' }}>🔥</span><span style={{ font: '700 10.5px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.7)' }}>여러명 겹침</span></div>
         </div>
       </div>
 
@@ -171,8 +171,8 @@ export default function SpaceDetailMap({ space, mine = false }) {
               ) : (
                 <div style={{ position: 'relative', background: '#fff', padding: '5px 5px 0', borderRadius: 3, transform: `rotate(${pin.rot}deg)`, boxShadow: '0 10px 28px rgba(0,0,0,.6)', marginTop: -2 }}>
                   <div style={{ width: pin.size, height: pin.size, borderRadius: 1, background: pin.thumb }} />
-                  <div style={{ padding: '5px 3px 9px', font: "700 10.5px/1.2 'Caveat',cursive", color: '#333', textAlign: 'center' }}>{pin.cap}</div>
-                  <div style={{ position: 'absolute', top: -9, right: -9, background: '#2997ff', border: '2.5px solid #fff', borderRadius: 9999, padding: '2px 7px', zIndex: 5, transform: `rotate(${-pin.rot}deg)` }}><span style={{ font: '800 12px/1 system-ui', color: '#fff' }}>{pin.badge}</span></div>
+                  <div style={{ padding: '5px 3px 9px', font: "700 10.5px/1.2 Pinmoa, system-ui", color: '#333', textAlign: 'center' }}>{pin.cap}</div>
+                  <div style={{ position: 'absolute', top: -9, right: -9, background: '#2997ff', border: '2.5px solid #fff', borderRadius: 9999, padding: '2px 7px', zIndex: 5, transform: `rotate(${-pin.rot}deg)` }}><span style={{ font: '800 12px/1 Pinmoa, system-ui', color: '#fff' }}>{pin.badge}</span></div>
                 </div>
               )}
             </div>
@@ -195,23 +195,23 @@ export default function SpaceDetailMap({ space, mine = false }) {
         <div className="pm-up" key={selected} style={{ position: 'absolute', left: 12, right: 12, bottom: 34, zIndex: 25, background: '#18181B', borderRadius: 26, padding: 15, boxShadow: '0 16px 44px rgba(0,0,0,.55)' }}>
           <div className="pm-tap" onClick={() => go('placeDetail', { place: sel, space })} style={{ display: 'flex', gap: 13 }}>
             <div style={{ position: 'relative', width: 78, height: 78, borderRadius: 18, flexShrink: 0, background: sel.thumb }}>
-              <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '3px 8px' }}><span style={{ font: '800 11px/1 system-ui', color: '#fff' }}>{sel.count}명</span></div>
+              <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '3px 8px' }}><span style={{ font: '800 11px/1 Pinmoa, system-ui', color: '#fff' }}>{sel.count}명</span></div>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ font: '800 18px/1.1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{sel.name}</span>
-                <span style={{ font: '700 14px/1 system-ui', color: '#fff' }}>⭐ {sel.rating}</span>
+                <span style={{ font: '800 18px/1.1 Pinmoa, system-ui', letterSpacing: '-.4px', color: '#fff' }}>{sel.name}</span>
+                <span style={{ font: '700 14px/1 Pinmoa, system-ui', color: '#fff' }}>⭐ {sel.rating}</span>
               </div>
-              <div style={{ marginTop: 5, font: '500 12.5px/1.2 system-ui', color: '#6a6a70' }}>{sel.addr}</div>
+              <div style={{ marginTop: 5, font: '500 12.5px/1.2 Pinmoa, system-ui', color: '#6a6a70' }}>{sel.addr}</div>
               <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 8, background: '#0D0D0F', borderRadius: 12, padding: '7px 10px', width: 'fit-content' }}>
-                <span style={{ font: "700 13px/1 'Caveat',cursive", color: '#fff' }}>"{sel.review}"</span>
-                <span style={{ font: '700 11px/1 system-ui', color: '#6a6a70' }}>– {sel.reviewer}</span>
+                <span style={{ font: "700 13px/1 Pinmoa, system-ui", color: '#fff' }}>"{sel.review}"</span>
+                <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: '#6a6a70' }}>– {sel.reviewer}</span>
               </div>
             </div>
           </div>
           <div style={{ marginTop: 12, display: 'flex', gap: 9 }}>
-            <div className="pm-tap" onClick={() => showToast(`${sel.count}명이 이 장소를 저장했어요`)} style={{ flex: 1, textAlign: 'center', background: '#0D0D0F', borderRadius: 12, padding: '10px 0', font: '800 13px/1 system-ui', color: '#fff' }}>{sel.count}명 저장</div>
-            <div className="pm-tap" onClick={() => go('placeDetail', { place: sel, space })} style={{ flex: 1, textAlign: 'center', background: '#2997ff', borderRadius: 12, padding: '10px 0', font: '800 13px/1 system-ui', color: '#fff' }}>자세히 보기</div>
+            <div className="pm-tap" onClick={() => showToast(`${sel.count}명이 이 장소를 저장했어요`)} style={{ flex: 1, textAlign: 'center', background: '#0D0D0F', borderRadius: 12, padding: '10px 0', font: '800 13px/1 Pinmoa, system-ui', color: '#fff' }}>{sel.count}명 저장</div>
+            <div className="pm-tap" onClick={() => go('placeDetail', { place: sel, space })} style={{ flex: 1, textAlign: 'center', background: '#2997ff', borderRadius: 12, padding: '10px 0', font: '800 13px/1 Pinmoa, system-ui', color: '#fff' }}>자세히 보기</div>
           </div>
         </div>
       )}

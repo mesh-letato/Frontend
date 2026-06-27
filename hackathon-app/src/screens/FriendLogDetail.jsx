@@ -48,7 +48,7 @@ export default function FriendLogDetail({ log: logProp }) {
         <div className="pm-tap" onClick={back} style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,.14)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="9" height="16" viewBox="0 0 9 16"><path d="M8 1L1 8l7 7" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
-        <span style={{ font: '800 13px/1 system-ui', letterSpacing: '2px', color: '#e8e2d4' }}>ARCHIVE — 친구의 기록</span>
+        <span style={{ font: '800 13px/1 Pinmoa, system-ui', letterSpacing: '2px', color: '#e8e2d4' }}>ARCHIVE — 친구의 기록</span>
         <div style={{ width: 36, height: 36 }} />
       </div>
 
@@ -75,27 +75,27 @@ export default function FriendLogDetail({ log: logProp }) {
             <div style={{ position: 'absolute', left: '3%', top: 26, width: 198, transform: 'rotate(-1.2deg)', zIndex: 5 }}>
               <Clip left="32%" rot={-4} />
               <div style={{ background: PAPER, borderRadius: 3, padding: '16px 15px 14px', boxShadow: '0 8px 20px rgba(0,0,0,.28)', borderTop: '1px solid #fff' }}>
-                <div style={{ font: '700 8px/1.2 system-ui', letterSpacing: '1.5px', color: '#9a8f7a', textTransform: 'uppercase' }}>Department of</div>
-                <div style={{ font: '700 8px/1.2 system-ui', letterSpacing: '1.5px', color: '#9a8f7a', textTransform: 'uppercase', marginBottom: 8 }}>Memory Archives</div>
-                <div style={{ font: '900 21px/1.05 system-ui', letterSpacing: '-.6px', color: '#2a251d' }}>{log.place}</div>
+                <div style={{ font: '700 8px/1.2 Pinmoa, system-ui', letterSpacing: '1.5px', color: '#9a8f7a', textTransform: 'uppercase' }}>Department of</div>
+                <div style={{ font: '700 8px/1.2 Pinmoa, system-ui', letterSpacing: '1.5px', color: '#9a8f7a', textTransform: 'uppercase', marginBottom: 8 }}>Memory Archives</div>
+                <div style={{ font: '900 21px/1.05 Pinmoa, system-ui', letterSpacing: '-.6px', color: '#2a251d' }}>{log.place}</div>
                 {/* 분류 폼 테이블 */}
                 <div style={{ marginTop: 11, border: '1px solid #cabfa6', borderRadius: 2 }}>
                   <div style={{ display: 'flex', borderBottom: '1px solid #cabfa6' }}>
-                    <div style={{ flex: '0 0 46px', padding: '4px 6px', font: '700 6.5px/1.4 system-ui', letterSpacing: '.5px', color: '#a99c82', borderRight: '1px solid #cabfa6', textTransform: 'uppercase' }}>분류</div>
-                    <div style={{ padding: '4px 6px', font: '800 10px/1.2 system-ui', color: '#5a4a30' }}>이탈리안 · {log.area}</div>
+                    <div style={{ flex: '0 0 46px', padding: '4px 6px', font: '700 6.5px/1.4 Pinmoa, system-ui', letterSpacing: '.5px', color: '#a99c82', borderRight: '1px solid #cabfa6', textTransform: 'uppercase' }}>분류</div>
+                    <div style={{ padding: '4px 6px', font: '800 10px/1.2 Pinmoa, system-ui', color: '#5a4a30' }}>이탈리안 · {log.area}</div>
                   </div>
                   <div style={{ display: 'flex' }}>
-                    <div style={{ flex: '0 0 46px', padding: '4px 6px', font: '700 6.5px/1.4 system-ui', letterSpacing: '.5px', color: '#a99c82', borderRight: '1px solid #cabfa6', textTransform: 'uppercase' }}>코드</div>
-                    <div style={{ padding: '4px 6px', font: "700 10px/1.2 'Caveat',cursive", color: '#5a4a30', letterSpacing: '.5px' }}>{code}</div>
+                    <div style={{ flex: '0 0 46px', padding: '4px 6px', font: '700 6.5px/1.4 Pinmoa, system-ui', letterSpacing: '.5px', color: '#a99c82', borderRight: '1px solid #cabfa6', textTransform: 'uppercase' }}>코드</div>
+                    <div style={{ padding: '4px 6px', font: "700 10px/1.2 Pinmoa, system-ui", color: '#5a4a30', letterSpacing: '.5px' }}>{code}</div>
                   </div>
                 </div>
-                <div style={{ marginTop: 9, font: '500 8.5px/1.55 system-ui', color: '#7c715c' }}>
+                <div style={{ marginTop: 9, font: '500 8.5px/1.55 Pinmoa, system-ui', color: '#7c715c' }}>
                   성수 연무장길에 보존된 기록. 친구가 다녀온 장소와 그날의 감상을 아카이브로 남깁니다.
                 </div>
                 {/* 빨강 보존 스탬프 */}
                 <div style={{ position: 'absolute', right: 10, bottom: 12, transform: 'rotate(-9deg)', border: '1.5px dashed #c0432e', borderRadius: 4, padding: '3px 7px', opacity: .82 }}>
-                  <div style={{ font: '900 8px/1.1 system-ui', letterSpacing: '.5px', color: '#c0432e', textAlign: 'center' }}>기록 보존</div>
-                  <div style={{ font: '700 7px/1.1 system-ui', color: '#c0432e', textAlign: 'center' }}>{date}</div>
+                  <div style={{ font: '900 8px/1.1 Pinmoa, system-ui', letterSpacing: '.5px', color: '#c0432e', textAlign: 'center' }}>기록 보존</div>
+                  <div style={{ font: '700 7px/1.1 Pinmoa, system-ui', color: '#c0432e', textAlign: 'center' }}>{date}</div>
                 </div>
               </div>
             </div>
@@ -105,14 +105,14 @@ export default function FriendLogDetail({ log: logProp }) {
               <Clip left="50%" rot={6} />
               <div style={{ background: '#fff', padding: '7px 7px 0', borderRadius: 2, boxShadow: '0 10px 22px rgba(0,0,0,.3)' }}>
                 <div style={{ height: 132, borderRadius: 1, background: log.photo }} />
-                <div style={{ padding: '7px 2px 9px', font: "700 16px/1.05 'Caveat',cursive", color: '#4a3a28', textAlign: 'center' }}>{log.caption}</div>
+                <div style={{ padding: '7px 2px 9px', font: "700 16px/1.05 Pinmoa, system-ui", color: '#4a3a28', textAlign: 'center' }}>{log.caption}</div>
               </div>
             </div>
 
             {/* ── ③ 날짜 라벨 박스 ── */}
             <div style={{ position: 'absolute', left: '5%', top: 296, transform: 'rotate(-4deg)', zIndex: 7, background: '#fbf8f0', border: '1px solid #d8cdb4', borderRadius: 2, padding: '7px 13px', boxShadow: '0 5px 12px rgba(0,0,0,.2)' }}>
-              <div style={{ font: '900 19px/1 system-ui', letterSpacing: '.5px', color: '#2f2a22' }}>{date}</div>
-              <div style={{ font: '700 7px/1.2 system-ui', letterSpacing: '1px', color: '#a0937a', marginTop: 2 }}>RECORDED</div>
+              <div style={{ font: '900 19px/1 Pinmoa, system-ui', letterSpacing: '.5px', color: '#2f2a22' }}>{date}</div>
+              <div style={{ font: '700 7px/1.2 Pinmoa, system-ui', letterSpacing: '1px', color: '#a0937a', marginTop: 2 }}>RECORDED</div>
             </div>
 
             {/* ── ④ 증거 스와치(작은 사진) ── */}
@@ -128,8 +128,8 @@ export default function FriendLogDetail({ log: logProp }) {
               <div style={{ position: 'relative', background: 'linear-gradient(165deg,#fff2a8,#ffe873)', padding: '14px 15px 18px', boxShadow: '0 9px 20px rgba(0,0,0,.22)' }}>
                 {/* 접힌 모서리 */}
                 <div style={{ position: 'absolute', right: 0, bottom: 0, width: 0, height: 0, borderStyle: 'solid', borderWidth: '0 0 18px 18px', borderColor: 'transparent transparent rgba(0,0,0,.12) transparent' }} />
-                <div style={{ font: '800 7.5px/1 system-ui', letterSpacing: '1.5px', color: '#a8902e', textTransform: 'uppercase' }}>Field Note</div>
-                <div style={{ marginTop: 8, font: "700 16px/1.5 'Caveat',cursive", color: '#5a4818' }}>{detail}</div>
+                <div style={{ font: '800 7.5px/1 Pinmoa, system-ui', letterSpacing: '1.5px', color: '#a8902e', textTransform: 'uppercase' }}>Field Note</div>
+                <div style={{ marginTop: 8, font: "700 16px/1.5 Pinmoa, system-ui", color: '#5a4818' }}>{detail}</div>
               </div>
             </div>
 
@@ -137,10 +137,10 @@ export default function FriendLogDetail({ log: logProp }) {
             <div style={{ position: 'absolute', left: '6%', top: 558, transform: 'rotate(2.5deg)', zIndex: 7 }}>
               <Clip left="22%" rot={3} />
               <div style={{ background: PAPER, borderRadius: 3, padding: '10px 13px', boxShadow: '0 7px 16px rgba(0,0,0,.24)', display: 'flex', alignItems: 'center', gap: 9 }}>
-                <div style={{ width: 30, height: 30, borderRadius: '50%', background: who.color, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 10px/1 system-ui', color: '#fff', border: '2px solid #fff', boxShadow: '0 2px 5px rgba(0,0,0,.2)' }}>{who.initial}</div>
+                <div style={{ width: 30, height: 30, borderRadius: '50%', background: who.color, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 10px/1 Pinmoa, system-ui', color: '#fff', border: '2px solid #fff', boxShadow: '0 2px 5px rgba(0,0,0,.2)' }}>{who.initial}</div>
                 <div>
-                  <div style={{ font: '700 6.5px/1.2 system-ui', letterSpacing: '1px', color: '#a99c82', textTransform: 'uppercase' }}>기록자 · {log.when} {log.action}</div>
-                  <div style={{ font: '900 14px/1.15 system-ui', color: '#2f2a22', marginTop: 2 }}>{who.name}</div>
+                  <div style={{ font: '700 6.5px/1.2 Pinmoa, system-ui', letterSpacing: '1px', color: '#a99c82', textTransform: 'uppercase' }}>기록자 · {log.when} {log.action}</div>
+                  <div style={{ font: '900 14px/1.15 Pinmoa, system-ui', color: '#2f2a22', marginTop: 2 }}>{who.name}</div>
                 </div>
               </div>
             </div>
@@ -148,22 +148,22 @@ export default function FriendLogDetail({ log: logProp }) {
             {/* ── ⑦ "가고싶어요" 고무 스탬프 + 아바타 ── */}
             <div style={{ position: 'absolute', right: '5%', top: 596, transform: 'rotate(-6deg)', zIndex: 8, textAlign: 'center' }}>
               <div style={{ border: '2.5px solid #c0432e', borderRadius: 7, padding: '6px 12px', opacity: .9 }}>
-                <div style={{ font: '900 13px/1 system-ui', letterSpacing: '1px', color: '#c0432e' }}>GO LIST ★</div>
-                <div style={{ font: '800 8px/1.2 system-ui', letterSpacing: '.5px', color: '#c0432e', marginTop: 3 }}>가고싶어요</div>
+                <div style={{ font: '900 13px/1 Pinmoa, system-ui', letterSpacing: '1px', color: '#c0432e' }}>GO LIST ★</div>
+                <div style={{ font: '800 8px/1.2 Pinmoa, system-ui', letterSpacing: '.5px', color: '#c0432e', marginTop: 3 }}>가고싶어요</div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: 7 }}>
                 {(log.wantAvatars || ['me', 'doyoon']).map((k, i) => (
-                  <div key={k} style={{ width: 21, height: 21, borderRadius: '50%', background: members[k].color, border: '2px solid #fff', marginLeft: i === 0 ? 0 : -7, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 8px/1 system-ui', color: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,.2)' }}>{members[k].initial?.[0] || ''}</div>
+                  <div key={k} style={{ width: 21, height: 21, borderRadius: '50%', background: members[k].color, border: '2px solid #fff', marginLeft: i === 0 ? 0 : -7, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 8px/1 Pinmoa, system-ui', color: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,.2)' }}>{members[k].initial?.[0] || ''}</div>
                 ))}
               </div>
-              <div style={{ marginTop: 5, font: "700 13px/1.1 'Caveat',cursive", color: '#5a4a35' }}>{log.wantBy}</div>
+              <div style={{ marginTop: 5, font: "700 13px/1.1 Pinmoa, system-ui", color: '#5a4a35' }}>{log.wantBy}</div>
             </div>
 
             {/* ── 장식: 작은 위치 태그 / 핀 ── */}
-            <div style={{ position: 'absolute', left: '57%', top: 244, transform: 'rotate(7deg)', zIndex: 7, background: '#fff2a8', padding: '5px 9px', font: "700 13px/1.1 'Caveat',cursive", color: '#7a6420', boxShadow: '0 4px 10px rgba(0,0,0,.18)' }}>
+            <div style={{ position: 'absolute', left: '57%', top: 244, transform: 'rotate(7deg)', zIndex: 7, background: '#fff2a8', padding: '5px 9px', font: "700 13px/1.1 Pinmoa, system-ui", color: '#7a6420', boxShadow: '0 4px 10px rgba(0,0,0,.18)' }}>
               📍 {log.area}
             </div>
-            <div style={{ position: 'absolute', left: '8%', top: 690, transform: 'rotate(-3deg)', zIndex: 7, border: '1px solid #cabfa6', background: '#fbf8f0', padding: '4px 9px', font: '800 8px/1.2 system-ui', letterSpacing: '1px', color: '#8a7d64' }}>
+            <div style={{ position: 'absolute', left: '8%', top: 690, transform: 'rotate(-3deg)', zIndex: 7, border: '1px solid #cabfa6', background: '#fbf8f0', padding: '4px 9px', font: '800 8px/1.2 Pinmoa, system-ui', letterSpacing: '1px', color: '#8a7d64' }}>
               MESH FIELD ARCHIVE · No.{String(log.id || 'l1').replace(/\D/g, '') || '1'}
             </div>
 

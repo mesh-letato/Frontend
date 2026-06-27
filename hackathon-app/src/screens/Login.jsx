@@ -21,8 +21,8 @@ export default function Login() {
         </div>
 
         {/* 워드마크 + 태그라인 */}
-        <div style={{ marginTop: 26, font: '800 40px/1 system-ui', letterSpacing: '-1.6px', color: '#fff' }}>핀모아</div>
-        <div style={{ marginTop: 14, textAlign: 'center', font: '500 15px/1.55 system-ui', color: 'rgba(255,255,255,.6)' }}>릴스로 발견한 장소를<br />친구들과 한 지도에 모아요</div>
+        <div style={{ marginTop: 26, font: '800 40px/1 Pinmoa, system-ui', letterSpacing: '-1.6px', color: '#fff' }}>핀모아</div>
+        <div style={{ marginTop: 14, textAlign: 'center', font: '500 15px/1.55 Pinmoa, system-ui', color: 'rgba(255,255,255,.6)' }}>릴스로 발견한 장소를<br />친구들과 한 지도에 모아요</div>
 
         {/* 핀 색 미리보기 (장식) */}
         <div style={{ marginTop: 32, display: 'flex' }}>
@@ -37,7 +37,7 @@ export default function Login() {
         <div className="pm-tap" onClick={() => reset('spaces')} style={{ width: '100%', background: '#FEE500', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 0', boxShadow: '0 12px 30px rgba(254,229,0,.2)' }}>
           <img src={kakaoLogin} alt="카카오 로그인" style={{ width: 183, height: 45, display: 'block' }} />
         </div>
-        <div style={{ marginTop: 16, textAlign: 'center', font: '500 12px/1.5 system-ui', color: '#6a6a70' }}>카카오로 3초 만에 시작해요</div>
+        <div style={{ marginTop: 16, textAlign: 'center', font: '500 12px/1.5 Pinmoa, system-ui', color: '#6a6a70' }}>카카오로 3초 만에 시작해요</div>
       </div>
 
       <HomeIndicator />

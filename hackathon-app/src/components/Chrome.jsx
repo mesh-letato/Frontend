@@ -12,7 +12,7 @@ export function StatusBar({ dark = false }) {
   const c = dark ? '#0D0D0F' : '#fff';
   return (
     <div style={{ position: 'relative', height: 54, zIndex: 30, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '19px 32px 0', flexShrink: 0 }}>
-      <span style={{ font: `600 16px/1 system-ui`, color: c }}>9:41</span>
+      <span style={{ font: `600 16px/1 Pinmoa, system-ui`, color: c }}>9:41</span>
       <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
         <svg width="18" height="11" viewBox="0 0 18 11"><rect x="0" y="7" width="3" height="4" rx=".6" fill={c} /><rect x="4.5" y="5" width="3" height="6" rx=".6" fill={c} /><rect x="9" y="2.5" width="3" height="8.5" rx=".6" fill={c} /><rect x="13.5" y="0" width="3" height="11" rx=".6" fill={c} /></svg>
         <svg width="16" height="11" viewBox="0 0 16 11"><path d="M8 2.8C10.1 2.8 12 3.6 13.4 5l1-1C12.7 2.3 10.5 1.3 8 1.3 5.5 1.3 3.3 2.3 1.6 4l1 1C4 3.6 5.9 2.8 8 2.8Z" fill={c} /><circle cx="8" cy="9.3" r="1.3" fill={c} /></svg>
@@ -45,7 +45,7 @@ export function Avatar({ m, size = 26, border = T.bg, ml = 0, fontSize }) {
     <div style={{
       width: size, height: size, borderRadius: '50%', border: `2px solid ${border}`,
       background: m.color, marginLeft: ml, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      font: `800 ${fontSize || Math.round(size * 0.36)}px/1 system-ui`, color: '#fff', flexShrink: 0,
+      font: `800 ${fontSize || Math.round(size * 0.36)}px/1 Pinmoa, system-ui`, color: '#fff', flexShrink: 0,
     }}>
       {showInitial ? m.initial : ''}
     </div>
