@@ -34,7 +34,7 @@ export function Avatar({ m, size = 26, border = T.bg, ml = 0, fontSize }) {
     <div style={{
       width: size, height: size, borderRadius: '50%', border: `2px solid ${border}`,
       background: m.color, marginLeft: ml, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      font: `800 ${fontSize || Math.round(size * 0.36)}px/1 system-ui`, color: '#fff', flexShrink: 0,
+      font: `800 ${fontSize || Math.round(size * 0.36)}px/1 Pinmoa, system-ui`, color: '#fff', flexShrink: 0,
     }}>
       {showInitial ? m.initial : ''}
     </div>

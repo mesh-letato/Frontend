@@ -17,15 +17,15 @@ export default function Splash() {
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" fill="#fff" /><circle cx="12" cy="9.6" r="2.6" fill="#2997ff" /></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ font: '800 36px/1 system-ui', letterSpacing: '-1.4px', color: '#fff' }}>핀모아</div>
-          <div style={{ marginTop: 12, font: '500 14px/1.4 system-ui', color: 'rgba(255,255,255,.5)' }}>친구들과 저장한 곳이<br />한 지도에 모여요</div>
+          <div style={{ font: '800 36px/1 Pinmoa, system-ui', letterSpacing: '-1.4px', color: '#fff' }}>핀모아</div>
+          <div style={{ marginTop: 12, font: '500 14px/1.4 Pinmoa, system-ui', color: 'rgba(255,255,255,.5)' }}>친구들과 저장한 곳이<br />한 지도에 모여요</div>
         </div>
       </div>
       <div style={{ position: 'absolute', bottom: 70, display: 'flex', alignItems: 'center', gap: 9 }}>
         <div style={{ width: 20, height: 20, position: 'relative' }}>
           <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '2.5px solid rgba(41,151,255,.25)', borderTopColor: '#2997ff', animation: 'pmSpin .9s linear infinite' }} />
         </div>
-        <span style={{ font: '600 12px/1 system-ui', color: 'rgba(255,255,255,.4)' }}>불러오는 중…</span>
+        <span style={{ font: '600 12px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.4)' }}>불러오는 중…</span>
       </div>
       <HomeIndicator />
     </div>

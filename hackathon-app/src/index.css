@@ -1,4 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
+/* 앱 전체 기본 글씨체 */
+@font-face {
+  font-family: 'Pinmoa';
+  src: url('/fonts/pinmoa.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 * { box-sizing: border-box; }
 
@@ -9,7 +16,7 @@ html, body, #root {
 }
 
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: Pinmoa, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   background: #050507;
   color: #fff;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +34,7 @@ body {
   height: 100dvh;
   background: #0D0D0F;
   overflow: hidden;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: Pinmoa, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 /* 화면 전환 애니메이션 */

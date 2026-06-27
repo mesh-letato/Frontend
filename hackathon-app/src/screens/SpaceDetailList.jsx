@@ -43,17 +43,17 @@ export default function SpaceDetailList({ space, mine = false }) {
           onList={() => {}}
           onLog={() => replace('spaceLog', { space, mine })}
         />
-        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>📍 최근 저장순</div>
+        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 Pinmoa, system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>📍 최근 저장순</div>
       </div>
 
       {/* 스크롤 영역 (장소들만) */}
       <div className="pm-scroll" style={{ flex: 1, padding: '0 20px 30px' }}>
         {loading ? (
-          <div style={{ padding: '40px 0', textAlign: 'center', font: '600 13px/1 system-ui', color: '#6a6a70' }}>불러오는 중…</div>
+          <div style={{ padding: '40px 0', textAlign: 'center', font: '600 13px/1 Pinmoa, system-ui', color: '#6a6a70' }}>불러오는 중…</div>
         ) : places.length === 0 ? (
           <div style={{ margin: '24px 0', padding: '28px 20px', background: '#18181B', borderRadius: 22, textAlign: 'center' }}>
-            <div style={{ font: '700 15px/1.4 system-ui', color: '#fff' }}>아직 저장한 장소가 없어요</div>
-            <div style={{ marginTop: 8, font: '500 13px/1.5 system-ui', color: '#6a6a70' }}>릴스 링크나 검색으로 장소를 추가해보세요</div>
+            <div style={{ font: '700 15px/1.4 Pinmoa, system-ui', color: '#fff' }}>아직 저장한 장소가 없어요</div>
+            <div style={{ marginTop: 8, font: '500 13px/1.5 Pinmoa, system-ui', color: '#6a6a70' }}>릴스 링크나 검색으로 장소를 추가해보세요</div>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
@@ -87,8 +87,8 @@ function PlaceRow({ p, thumb, onTap }) {
     <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
       <div style={{ width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.thumbnailUrl ? `center/cover url(${p.thumbnailUrl})` : thumb }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ font: '800 16px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-        <div style={{ marginTop: 4, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{shortCat(p.category)}{p.address ? ` · ${shortArea(p.address)}` : ''}</div>
+        <div style={{ font: '800 16px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+        <div style={{ marginTop: 4, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{shortCat(p.category)}{p.address ? ` · ${shortArea(p.address)}` : ''}</div>
       </div>
     </div>
   );

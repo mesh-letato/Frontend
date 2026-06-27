@@ -128,7 +128,7 @@ export default function SpaceDetailMap({ space, mine = false }) {
       <div style={{ position: 'absolute', top: 62, left: 14, right: 14, zIndex: 20, background: 'rgba(24,24,27,.82)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: '12px 15px', boxShadow: '0 8px 24px rgba(0,0,0,.4)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
           <BackBtn onClick={back} />
-          <div style={{ flex: 1, font: '800 17px/1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{space?.emoji ? `${space.emoji} ` : ''}{space?.name || '스페이스'}</div>
+          <div style={{ flex: 1, font: '800 17px/1 Pinmoa, system-ui', letterSpacing: '-.4px', color: '#fff' }}>{space?.emoji ? `${space.emoji} ` : ''}{space?.name || '스페이스'}</div>
           {mine ? (
             <Avatar m={{ color: '#2997ff', initial: (user?.nickname || '나').slice(0, 1) }} size={28} border="#18181B" />
           ) : (
@@ -136,14 +136,14 @@ export default function SpaceDetailMap({ space, mine = false }) {
               <div style={{ display: 'flex', marginRight: 4 }}>
                 {members.slice(0, 3).map((m, i) => <Avatar key={m.userId} m={toAvatar(m)} size={28} border="#18181B" ml={i === 0 ? 0 : -9} />)}
                 {(space?.memberCount ?? members.length) > 3 && (
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 system-ui', color: '#fff' }}>+{(space?.memberCount ?? members.length) - 3}</div>
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 Pinmoa, system-ui', color: '#fff' }}>+{(space?.memberCount ?? members.length) - 3}</div>
                 )}
               </div>
               <ManageBtn onClick={() => setManage(true)} />
             </>
           )}
         </div>
-        <div style={{ marginTop: 9, font: '600 12px/1 system-ui', color: 'rgba(255,255,255,.55)' }}>장소 {places.length}곳</div>
+        <div style={{ marginTop: 9, font: '600 12px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.55)' }}>장소 {places.length}곳</div>
       </div>
 
       {/* 토글 */}
@@ -155,18 +155,18 @@ export default function SpaceDetailMap({ space, mine = false }) {
           <div className="pm-tap" onClick={() => go('placeDetail', { place: mapToDetail(sel, THUMBS[selected % THUMBS.length]), space })} style={{ display: 'flex', gap: 13 }}>
             <div style={{ width: 78, height: 78, borderRadius: 18, flexShrink: 0, background: sel.thumbnailUrl ? `center/cover url(${sel.thumbnailUrl})` : THUMBS[selected % THUMBS.length] }} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ font: '800 18px/1.1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{sel.name}</span>
-              <div style={{ marginTop: 5, font: '500 12.5px/1.3 system-ui', color: '#6a6a70' }}>{shortCat(sel.category)}{sel.address ? ` · ${sel.address}` : ''}</div>
+              <span style={{ font: '800 18px/1.1 Pinmoa, system-ui', letterSpacing: '-.4px', color: '#fff' }}>{sel.name}</span>
+              <div style={{ marginTop: 5, font: '500 12.5px/1.3 Pinmoa, system-ui', color: '#6a6a70' }}>{shortCat(sel.category)}{sel.address ? ` · ${sel.address}` : ''}</div>
             </div>
           </div>
           <div style={{ marginTop: 12, display: 'flex', gap: 9 }}>
-            <div className="pm-tap" onClick={() => go('placeDetail', { place: mapToDetail(sel, THUMBS[selected % THUMBS.length]), space })} style={{ flex: 1, textAlign: 'center', background: '#2997ff', borderRadius: 12, padding: '11px 0', font: '800 13px/1 system-ui', color: '#fff' }}>자세히 보기</div>
+            <div className="pm-tap" onClick={() => go('placeDetail', { place: mapToDetail(sel, THUMBS[selected % THUMBS.length]), space })} style={{ flex: 1, textAlign: 'center', background: '#2997ff', borderRadius: 12, padding: '11px 0', font: '800 13px/1 Pinmoa, system-ui', color: '#fff' }}>자세히 보기</div>
           </div>
         </div>
       ) : (
         <div style={{ position: 'absolute', left: 12, right: 12, bottom: 34, zIndex: 25, background: '#18181B', borderRadius: 26, padding: '20px 18px', boxShadow: '0 16px 44px rgba(0,0,0,.55)', textAlign: 'center' }}>
-          <div style={{ font: '700 14px/1.4 system-ui', color: '#fff' }}>아직 저장한 장소가 없어요</div>
-          <div style={{ marginTop: 6, font: '500 12.5px/1.5 system-ui', color: '#6a6a70' }}>릴스 링크나 검색으로 장소를 추가해보세요</div>
+          <div style={{ font: '700 14px/1.4 Pinmoa, system-ui', color: '#fff' }}>아직 저장한 장소가 없어요</div>
+          <div style={{ marginTop: 6, font: '500 12.5px/1.5 Pinmoa, system-ui', color: '#6a6a70' }}>릴스 링크나 검색으로 장소를 추가해보세요</div>
         </div>
       )}
 

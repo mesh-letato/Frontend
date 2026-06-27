@@ -25,4 +25,4 @@ export const grad = {
   green: 'radial-gradient(circle at 30% 25%,rgba(255,255,255,.3),transparent 60%),linear-gradient(140deg,#a8c98a,#5e8a4e)',
 };
 
-export const sys = "system-ui,-apple-system,'Segoe UI',Roboto,sans-serif";
+export const sys = "Pinmoa, system-ui,-apple-system,'Segoe UI',Roboto,sans-serif";

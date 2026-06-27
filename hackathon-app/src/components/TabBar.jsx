@@ -11,7 +11,7 @@ export function TabBar({ active = 'space', onPlus }) {
       {/* 내 지도 (+ 좌측) */}
       <div className="pm-tap" onClick={() => mySpace && go('spaceMap', { space: mySpace, mine: true })} style={col}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" fill={mineActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={mineActive ? '#2997ff' : muted} strokeWidth="1.8" /></svg>
-        <span style={{ font: `${mineActive ? 800 : 600} 10px/1 system-ui`, color: mineActive ? '#2997ff' : muted }}>내 지도</span>
+        <span style={{ font: `${mineActive ? 800 : 600} 10px/1 Pinmoa, system-ui`, color: mineActive ? '#2997ff' : muted }}>내 지도</span>
       </div>
       {/* + 추가 (가운데) */}
       <div className="pm-tap" onClick={onPlus} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -22,7 +22,7 @@ export function TabBar({ active = 'space', onPlus }) {
       {/* 스페이스 (+ 우측) */}
       <div className="pm-tap" onClick={() => reset('spaces')} style={col}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="6.2" fill={spaceActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={spaceActive ? '#2997ff' : muted} strokeWidth="1.9" /><circle cx="15" cy="12" r="6.2" fill={spaceActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={spaceActive ? '#2997ff' : muted} strokeWidth="1.9" /></svg>
-        <span style={{ font: `${spaceActive ? 800 : 600} 10px/1 system-ui`, color: spaceActive ? '#2997ff' : muted }}>스페이스</span>
+        <span style={{ font: `${spaceActive ? 800 : 600} 10px/1 Pinmoa, system-ui`, color: spaceActive ? '#2997ff' : muted }}>스페이스</span>
       </div>
     </div>
   );
@@ -33,7 +33,7 @@ const col = { display: 'flex', flexDirection: 'column', alignItems: 'center', ga
 // 03/04/10 공용 3탭 토글 (지도 / 리스트 / 로그)
 export function DetailTabs({ active, onMap, onList, onLog, floating = false, hasNew = false }) {
   const tab = (label, on, isActive, extraDot) => (
-    <div className="pm-tap" onClick={on} style={{ flex: floating ? undefined : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: extraDot ? 5 : 0, textAlign: 'center', borderRadius: floating ? 9 : 10, padding: floating ? '8px 18px' : '9px 0', background: isActive ? '#2997ff' : 'transparent', font: `${isActive ? 800 : 700} 13px/1 system-ui`, color: isActive ? '#fff' : '#6a6a70' }}>
+    <div className="pm-tap" onClick={on} style={{ flex: floating ? undefined : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: extraDot ? 5 : 0, textAlign: 'center', borderRadius: floating ? 9 : 10, padding: floating ? '8px 18px' : '9px 0', background: isActive ? '#2997ff' : 'transparent', font: `${isActive ? 800 : 700} 13px/1 Pinmoa, system-ui`, color: isActive ? '#fff' : '#6a6a70' }}>
       {label}
       {extraDot && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#30d158' }} />}
     </div>
