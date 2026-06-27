@@ -80,7 +80,7 @@ export default function Spaces() {
       {link && <LinkModal onClose={() => setLink(false)} onSubmit={(url) => { setLink(false); go('linkAnalyzing', { url, target: 'myspace' }); }} />}
 
       {/* 검색해서 장소 추가 */}
-      {search && <SearchModal onClose={() => setSearch(false)} onSubmit={() => { setSearch(false); go('placeSelect'); }} />}
+      {search && <SearchModal onClose={() => setSearch(false)} onSubmit={(value) => { setSearch(false); go('searchPlaceMap', { initialQuery: value || '미오 성수' }); }} />}
 
       <HomeIndicator />
     </div>
@@ -164,7 +164,7 @@ function SearchModal({ onClose, onSubmit }) {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="rgba(255,255,255,.55)" strokeWidth="2" /><path d="M20 20l-3.5-3.5" stroke="rgba(255,255,255,.55)" strokeWidth="2" strokeLinecap="round" /></svg>
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="예: 미오 성수" style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', font: '500 15px/1 system-ui', color: '#fff' }} />
         </div>
-        <div className="pm-tap" onClick={() => onSubmit(q || '미오 성수')} style={{ marginTop: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2997ff', borderRadius: 16, padding: 16, boxShadow: '0 10px 24px rgba(41,151,255,.36)' }}>
+        <div className="pm-tap" onClick={() => onSubmit(q.trim() || '미오 성수')} style={{ marginTop: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2997ff', borderRadius: 16, padding: 16, boxShadow: '0 10px 24px rgba(41,151,255,.36)' }}>
           <span style={{ font: '800 16px/1 system-ui', color: '#fff' }}>검색</span>
         </div>
         <div className="pm-tap" onClick={onClose} style={{ marginTop: 12, textAlign: 'center', font: '700 14px/1 system-ui', color: 'rgba(255,255,255,.4)', padding: 10 }}>취소</div>

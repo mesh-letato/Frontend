@@ -19,7 +19,7 @@ export const placesSeongsu = [
   {
     id: 1, name: '미오 성수', cat: '이탈리안', area: '연무장길', addr: '서울 성동구 연무장길 33 · 320m',
     thumb: grad.pasta, count: 5, savers: ['me', 'jiyoon', 'doyoon'], saverText: '나·지윤 외 3명 저장',
-    review: '트러플 파스타 인생맛 🤤', reviewer: '지윤', rating: '4.8',
+    review: '트러플 파스타 인생맛 🤤', reviewer: '지윤', rating: '4.8', lat: 37.5445, lng: 127.0558,
     reels: [
       { user: '@seongsu.foodie', views: '12.4만', g: 'radial-gradient(circle at 42% 30%,#ffe0bd,transparent),linear-gradient(150deg,#e89a5a,#7a2e22)' },
       { user: '@daily.mukbang', views: '8.7만', g: 'radial-gradient(circle at 42% 30%,#ffd2c2,transparent),linear-gradient(150deg,#c8584a,#561d18)' },
@@ -29,12 +29,12 @@ export const placesSeongsu = [
   {
     id: 2, name: '센터커피 성수', cat: '카페', area: '성수이로', addr: '서울 성동구 성수이로 88 · 510m',
     thumb: grad.cafe, count: 3, savers: ['me', 'jiyoon'], saverText: '나·지윤 외 1명 저장',
-    review: '분위기 짱 ✨', reviewer: '도윤', rating: '4.6', reels: [], pinSize: 'mid',
+    review: '분위기 짱 ✨', reviewer: '도윤', rating: '4.6', reels: [], pinSize: 'mid', lat: 37.5448, lng: 127.0572,
   },
   {
     id: 3, name: '소금집델리', cat: '샌드위치', area: '서울숲길', addr: '서울 성동구 서울숲길 17 · 240m',
     thumb: grad.pink, count: 2, savers: ['doyoon'], saverText: '도윤 외 1명 저장',
-    review: '소금빵 최고 🥐', reviewer: '도윤', rating: '4.7', reels: [], pinSize: 'small',
+    review: '소금빵 최고 🥐', reviewer: '도윤', rating: '4.7', reels: [], pinSize: 'small', lat: 37.5436, lng: 127.0541,
   },
 ];
 

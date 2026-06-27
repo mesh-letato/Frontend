@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator, Avatar } from '../components/Chrome';
+import { loadKakaoMapSdk } from '../utils/kakaoMap';
 import { DetailTabs } from '../components/TabBar';
 import { ManageBtn, MemberManageModal } from '../components/SpaceHeader';
 import { placesSeongsu, members } from '../data/mock';
@@ -22,25 +23,100 @@ export default function SpaceDetailMap({ space, mine = false }) {
   const { back, go, replace, showToast } = useNav();
   const [selected, setSelected] = useState(0); // 기본 첫 핀 선택
   const [manage, setManage] = useState(false);
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markersRef = useRef([]);
 
   const sel = PINS[selected];
 
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    let cancelled = false;
+
+    const initializeMap = async () => {
+      try {
+        const kakaoMaps = await loadKakaoMapSdk();
+        if (cancelled || !mapRef.current) return;
+
+        kakaoMaps.load(() => {
+          const container = mapRef.current;
+          if (!container || cancelled) return;
+
+          const map = new kakaoMaps.Map(container, {
+            center: new kakaoMaps.LatLng(PINS[0].lat, PINS[0].lng),
+            level: 4,
+            draggable: true,
+            scrollwheel: true,
+          });
+
+          mapInstanceRef.current = map;
+          markersRef.current = PINS.map((pin, index) => {
+            const position = new kakaoMaps.LatLng(pin.lat, pin.lng);
+            const marker = new kakaoMaps.Marker({
+              map,
+              position,
+              title: pin.name,
+            });
+
+            const infoWindow = new kakaoMaps.InfoWindow({
+              content: `<div style="padding:8px 10px;font-size:12px;font-weight:700;color:#111;">${pin.name}</div>`,
+            });
+
+            kakaoMaps.event.addListener(marker, 'click', () => {
+              setSelected(index);
+              infoWindow.open(map, marker);
+            });
+
+            return { marker, infoWindow };
+          });
+
+          const bounds = new kakaoMaps.LatLngBounds();
+          PINS.forEach((pin) => bounds.extend(new kakaoMaps.LatLng(pin.lat, pin.lng)));
+          map.setBounds(bounds);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    initializeMap();
+
+    return () => {
+      cancelled = true;
+      markersRef.current.forEach(({ infoWindow }) => infoWindow.close());
+      markersRef.current = [];
+      mapInstanceRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mapInstanceRef.current || !window.kakao?.maps) return;
+
+    const kakaoMaps = window.kakao.maps;
+    const map = mapInstanceRef.current;
+    const target = PINS[selected];
+    if (!target || !kakaoMaps?.LatLng) return;
+
+    const position = new kakaoMaps.LatLng(target.lat, target.lng);
+    map.panTo(position);
+
+    markersRef.current.forEach(({ marker, infoWindow }, index) => {
+      if (index === selected) {
+        infoWindow.open(map, marker);
+      } else {
+        infoWindow.close();
+      }
+    });
+  }, [selected]);
+
   return (
     <div style={{ position: 'absolute', inset: 0, background: '#12141a', overflow: 'hidden' }}>
-      {/* 지도 베이스 */}
-      <svg width="100%" height="100%" viewBox="0 0 402 874" preserveAspectRatio="xMidYMid slice" style={{ position: 'absolute', inset: 0 }}>
-        <rect width="402" height="874" fill="#12141a" />
-        <rect x="22" y="120" width="150" height="120" rx="8" fill="#181b22" />
-        <rect x="210" y="150" width="170" height="140" rx="8" fill="#181b22" />
-        <rect x="40" y="300" width="120" height="170" rx="8" fill="#181b22" />
-        <rect x="250" y="370" width="130" height="130" rx="8" fill="#181b22" />
-        <path d="M252 480 q40 -16 64 18 q14 44 -28 56 q-52 8 -56 -34 q-2 -28 20 -40Z" fill="#16231a" />
-        <g stroke="#222631" strokeWidth="13" fill="none" strokeLinecap="round"><path d="M-10 285 C120 260 250 325 420 275" /><path d="M150 -10 C170 200 120 460 185 900" /><path d="M-10 560 L420 520" /><path d="M312 -10 L287 900" /></g>
-        <g stroke="#2c313d" strokeWidth="3" fill="none"><path d="M60 100 L80 800" /><path d="M232 80 L250 760" /><path d="M-10 400 L420 380" /><path d="M-10 690 L420 660" /></g>
-      </svg>
+      <div ref={mapRef} style={{ position: 'absolute', inset: 0, zIndex: 0, background: '#0e1117' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35))', zIndex: 1, pointerEvents: 'none' }} />
 
       {/* 선택 시 어두운 오버레이 */}
-      <div style={{ position: 'absolute', inset: 0, background: '#000', opacity: selected != null ? 0.4 : 0, transition: 'opacity .3s', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: '#000', opacity: selected != null ? 0.4 : 0, transition: 'opacity .3s', pointerEvents: 'none', zIndex: 2 }} />
 
       <Notch />
       <StatusBar />
