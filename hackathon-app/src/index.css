@@ -1,7 +1,7 @@
 /* 앱 전체 기본 글씨체 */
 @font-face {
   font-family: 'Pinmoa';
-  src: url('/fonts/pinmoa.ttf') format('truetype');
+  src: url('/fonts/pinmoa.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;

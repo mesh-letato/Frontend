@@ -95,7 +95,7 @@ export default function WriteReview({ place: placeProp, space }) {
 
         {/* 다녀왔어요 / 가고싶어요 토글 */}
         <div style={{ margin: '14px 20px 0', background: '#18181B', borderRadius: 13, padding: 4, display: 'flex' }}>
-          {[['visited', '✅ 다녀왔어요'], ['want', '💙 가고싶어요']].map(([k, label]) => (
+          {[['visited', '다녀왔어요'], ['want', '가고싶어요']].map(([k, label]) => (
             <div key={k} className="pm-tap" onClick={() => setMode(k)} style={{ flex: 1, textAlign: 'center', borderRadius: 10, padding: '10px 0', background: mode === k ? '#2997ff' : 'transparent', font: `${mode === k ? 800 : 700} 13px/1 Pinmoa, system-ui`, color: mode === k ? '#fff' : '#6a6a70' }}>{label}</div>
           ))}
         </div>
