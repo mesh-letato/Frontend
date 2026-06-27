@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
-import { Notch, StatusBar, HomeIndicator, Avatar } from '../components/Chrome';
+import { Notch, StatusBar, HomeIndicator } from '../components/Chrome';
 import { TabBar } from '../components/TabBar';
-import { members, MY_SPACE } from '../data/mock';
+import { MY_SPACE } from '../data/mock';
 
 export default function Spaces() {
   const { go, reset, spaces, showToast } = useNav();
@@ -103,78 +103,14 @@ function MenuRow({ icon, title, sub, onClick }) {
 }
 
 function SpaceCard({ sp, onTap }) {
-  const big = sp.big;
   return (
-    <div className="pm-tap" onClick={onTap} style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', height: big ? 260 : 172, background: sp.bg }}>
-      <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg,rgba(13,13,15,${big ? '.05' : '.1'}) 40%,rgba(13,13,15,.92) 100%)` }} />
-
-      {/* 미니 폴라로이드 (큰 카드) */}
-      {big && sp.polaroid && (
-        <div style={{ position: 'absolute', right: 16, top: 18, width: 88, background: '#fff', padding: '6px 6px 18px', borderRadius: 3, transform: 'rotate(6deg)', boxShadow: '0 10px 24px rgba(0,0,0,.5)' }}>
-          <div style={{ height: 78, borderRadius: 2, background: sp.polaroid.g }} />
-          <div style={{ marginTop: 5, font: "700 11px/1 'Caveat',cursive", color: '#333', textAlign: 'center' }}>{sp.polaroid.cap}</div>
-        </div>
-      )}
-
-      {/* NEW 배지 */}
-      {sp.isNew && big && (
-        <div style={{ position: 'absolute', left: 18, top: 18, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(10px)', borderRadius: 9999, padding: '6px 12px' }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#30d158' }} />
-          <span style={{ font: '700 11px/1 system-ui', color: '#fff' }}>{sp.newText}</span>
-        </div>
-      )}
-
-      {/* 겹침 배지 (작은 카드 우상단) */}
-      {!big && (
-        <div style={{ position: 'absolute', right: 14, top: 16, display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(10px)', borderRadius: 9999, padding: '6px 11px' }}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="6" stroke="#fff" strokeWidth="2.4" /><circle cx="15" cy="12" r="6" stroke="#fff" strokeWidth="2.4" /></svg>
-          <span style={{ font: '800 11px/1 system-ui', color: '#fff' }}>겹침 {sp.overlap}</span>
-        </div>
-      )}
-
+    <div className="pm-tap" onClick={onTap} style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', height: 168, background: sp.bg }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(13,13,15,.1) 40%,rgba(13,13,15,.92) 100%)' }} />
       <div style={{ position: 'absolute', left: 20, right: 20, bottom: 18 }}>
-        {big ? (
-          <>
-            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-              <div>
-                <div style={{ font: '800 26px/1 system-ui', letterSpacing: '-.8px', color: '#fff' }}>{sp.name}</div>
-                <div style={{ marginTop: 8, font: '600 13px/1 system-ui', color: 'rgba(255,255,255,.7)' }}>{sp.placeCount}곳 저장 · 후기 {sp.reviewCount}</div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#2997ff', borderRadius: 9999, padding: '7px 12px', boxShadow: '0 6px 16px rgba(41,151,255,.4)' }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="6" stroke="#fff" strokeWidth="2.4" /><circle cx="15" cy="12" r="6" stroke="#fff" strokeWidth="2.4" /></svg>
-                <span style={{ font: '800 12px/1 system-ui', color: '#fff' }}>겹침 {sp.overlap}</span>
-              </div>
-            </div>
-            <div style={{ marginTop: 14, display: 'flex' }}>
-              <CardAvatars sp={sp} size={34} />
-            </div>
-          </>
-        ) : (
-          <>
-            <div style={{ font: '800 24px/1 system-ui', letterSpacing: '-.7px', color: '#fff' }}>{sp.name}</div>
-            <div style={{ marginTop: 7, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex' }}><CardAvatars sp={sp} size={30} /></div>
-              <span style={{ font: '600 13px/1 system-ui', color: 'rgba(255,255,255,.65)' }}>{sp.placeCount}곳 · 멤버 {sp.memberCount}</span>
-            </div>
-          </>
-        )}
+        <div style={{ font: '800 24px/1 system-ui', letterSpacing: '-.7px', color: '#fff' }}>{sp.name}</div>
+        <div style={{ marginTop: 8, font: '600 13px/1 system-ui', color: 'rgba(255,255,255,.65)' }}>{sp.placeCount}곳 · 멤버 {sp.memberCount}명</div>
       </div>
     </div>
-  );
-}
-
-function CardAvatars({ sp, size }) {
-  const list = (sp.avatars || []).map((k) => members[k]);
-  return (
-    <>
-      {list.map((m, i) => <Avatar key={i} m={m} size={size} border="#0D0D0F" ml={i === 0 ? 0 : -11} />)}
-      {sp.gradAvatars?.map((g, i) => (
-        <div key={'g' + i} style={{ width: size, height: size, borderRadius: '50%', border: '2.5px solid #0D0D0F', background: `linear-gradient(140deg,${g},#333)`, marginLeft: -11 }} />
-      ))}
-      {sp.extra > 0 && (
-        <div style={{ width: size, height: size, borderRadius: '50%', border: '2.5px solid #0D0D0F', background: '#2a2a2e', marginLeft: -11, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 11px/1 system-ui', color: '#fff' }}>+{sp.extra}</div>
-      )}
-    </>
   );
 }
 
