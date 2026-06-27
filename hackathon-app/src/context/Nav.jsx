@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { initialSpaces, mySpace } from '../data/mock';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { authApi, spacesApi } from '../api';
 
 const NavCtx = createContext(null);
 export const useNav = () => useContext(NavCtx);
@@ -12,10 +12,12 @@ function initialStack() {
   if (typeof window !== 'undefined') {
     const q = new URLSearchParams(window.location.search);
     if (q.has('share') || q.has('url') || q.has('text')) {
-      const url = q.get('url') || q.get('text') || 'instagram.com/reel/Cx8q…seongsu';
+      const url = q.get('url') || q.get('text') || '';
+      // 로그인 상태면 분석 화면으로, 아니면 로그인 후 진행
+      const authed = authApi.isAuthenticated();
       return [
-        { name: 'spaces', params: {} },
-        { name: 'linkAnalyzing', params: { url, target: 'spaces' } },
+        { name: authed ? 'spaces' : 'login', params: {} },
+        ...(authed ? [{ name: 'linkAnalyzing', params: { url, target: 'spaces' } }] : []),
       ];
     }
   }
@@ -27,9 +29,11 @@ export function NavProvider({ children }) {
   const [stack, setStack] = useState(initialStack);
   const [anim, setAnim] = useState('pm-fade');
 
-  // 앱 전역 데이터 (API 대신 로컬 상태)
-  const [spaces, setSpaces] = useState(initialSpaces);
-  const [myPlaces, setMyPlaces] = useState(mySpace.places);
+  // 인증 / 앱 전역 데이터
+  const [user, setUser] = useState(() => authApi.getCurrentUser());
+  const [spaces, setSpaces] = useState([]); // SHARED 스페이스 목록 (스페이스 화면)
+  const [mySpace, setMySpace] = useState(null); // MY 타입 스페이스
+  const [spacesLoading, setSpacesLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
   const go = useCallback((name, params = {}, transition = 'pm-slide') => {
@@ -57,15 +61,44 @@ export function NavProvider({ children }) {
     setTimeout(() => setToast(null), 1800);
   }, []);
 
-  // 새 스페이스 추가
-  const addSpace = useCallback((space) => {
-    setSpaces((s) => [...s, space]);
+  // 스페이스 목록 + 내 스페이스 동기화
+  const refreshSpaces = useCallback(async () => {
+    if (!authApi.isAuthenticated()) return;
+    setSpacesLoading(true);
+    try {
+      const all = await spacesApi.listSpaces();
+      let mine = all.find((s) => s.type === 'MY');
+      if (!mine) {
+        // 백엔드 미구현: 내 스페이스가 없으면 생성
+        mine = await spacesApi.ensureMySpace();
+      }
+      setMySpace(mine);
+      setSpaces(all.filter((s) => s.type !== 'MY'));
+    } catch (e) {
+      console.error('스페이스 동기화 실패', e);
+    } finally {
+      setSpacesLoading(false);
+    }
   }, []);
 
-  // 내 스페이스에 장소 저장
-  const saveToMySpace = useCallback((place) => {
-    setMyPlaces((p) => [place, ...p]);
-  }, []);
+  // 로그인 직후 호출: 사용자 저장 + 내 스페이스 보장 + 스페이스 로드
+  const onAuthenticated = useCallback(async () => {
+    setUser(authApi.getCurrentUser());
+    await refreshSpaces();
+  }, [refreshSpaces]);
+
+  const logout = useCallback(() => {
+    authApi.logout();
+    setUser(null);
+    setSpaces([]);
+    setMySpace(null);
+    reset('login');
+  }, [reset]);
+
+  // 인증된 상태로 앱이 시작되면 스페이스 미리 로드
+  useEffect(() => {
+    if (authApi.isAuthenticated()) refreshSpaces();
+  }, [refreshSpaces]);
 
   const current = stack[stack.length - 1];
 
@@ -73,11 +106,11 @@ export function NavProvider({ children }) {
     () => ({
       current, stack, anim,
       go, replace, back, reset,
-      spaces, addSpace,
-      myPlaces, saveToMySpace,
+      user, setUser, onAuthenticated, logout,
+      spaces, mySpace, spacesLoading, refreshSpaces,
       toast, showToast,
     }),
-    [current, stack, anim, go, replace, back, reset, spaces, addSpace, myPlaces, saveToMySpace, toast, showToast]
+    [current, stack, anim, go, replace, back, reset, user, onAuthenticated, logout, spaces, mySpace, spacesLoading, refreshSpaces, toast, showToast]
   );
 
   return <NavCtx.Provider value={value}>{children}</NavCtx.Provider>;

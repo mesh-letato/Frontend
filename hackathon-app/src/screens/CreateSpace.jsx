@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
-import { members, nextId } from '../data/mock';
+import { members } from '../data/mock';
+import { spacesApi } from '../api';
 
 const DEFAULT_NAME = '새 스페이스';
 // 대표 색 (빨주노초파남보) — 나중에 지도 핀 색으로 사용
@@ -17,28 +18,50 @@ const COLORS = [
 const cardBg = (hex) => `radial-gradient(circle at 42% 28%,${hex}3a,transparent 62%),linear-gradient(160deg,#17171b,#0a0a0d)`;
 
 export default function CreateSpace() {
-  const { back, reset, addSpace, showToast } = useNav();
+  const { back, reset, refreshSpaces, showToast } = useNav();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [color, setColor] = useState(COLORS[0].hex);
   const [copied, setCopied] = useState(false);
+  const [created, setCreated] = useState(null); // 백엔드 생성 결과 (inviteCode 포함)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const named = name.trim().length > 0;
   const displayName = named ? name : DEFAULT_NAME;
-  const code = 'SEONGSU' + (1000 + (name.length * 7) % 9000);
+  const code = created?.inviteCode || '생성 중…';
+
+  // step1 → step2: 백엔드에 스페이스를 만들고(또는 이름 변경) 초대코드를 받아온다.
+  const goToInvite = async () => {
+    if (!named || loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      let space = created;
+      if (!space) {
+        space = await spacesApi.createSpace({ name: displayName, emoji: '📍', type: 'SHARED' });
+      } else if (space.name !== displayName) {
+        space = await spacesApi.updateSpace(space.id, { name: displayName });
+      }
+      setCreated(space);
+      setStep(2);
+    } catch (e) {
+      setError(e.message || '스페이스 생성에 실패했어요');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const copyCode = () => {
+    if (!created) return;
     const text = `친구와 핀모아에서 ${displayName} 같이 모아요! 초대코드 : ${code}`;
     if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
     setCopied(true);
     showToast('초대 코드를 복사했어요 📋');
   };
 
-  const create = () => {
-    addSpace({
-      id: nextId(), name: displayName, color, placeCount: 0, memberCount: 1,
-      bg: cardBg(color),
-    });
+  const create = async () => {
+    await refreshSpaces();
     showToast('새 스페이스를 만들었어요 ✨');
     reset('spaces');
   };
@@ -125,9 +148,10 @@ export default function CreateSpace() {
 
       {/* CTA */}
       <div style={{ padding: '14px 20px 30px', background: 'linear-gradient(180deg,rgba(13,13,15,0),#0D0D0F 38%)' }}>
+        {error && <div style={{ marginBottom: 10, font: '600 12.5px/1.4 system-ui', color: '#ff7a7a' }}>{error}</div>}
         {step === 1 ? (
-          <div className="pm-tap" onClick={() => named && setStep(2)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: named ? '#fff' : '#2a2a2e', borderRadius: 18, padding: 17, transition: 'background .2s', boxShadow: named ? '0 10px 24px rgba(0,0,0,.4)' : 'none' }}>
-            <span style={{ font: '800 16px/1 system-ui', color: named ? '#0D0D0F' : '#6a6a70' }}>다음</span>
+          <div className="pm-tap" onClick={goToInvite} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: named && !loading ? '#fff' : '#2a2a2e', borderRadius: 18, padding: 17, transition: 'background .2s', boxShadow: named ? '0 10px 24px rgba(0,0,0,.4)' : 'none' }}>
+            <span style={{ font: '800 16px/1 system-ui', color: named && !loading ? '#0D0D0F' : '#6a6a70' }}>{loading ? '만드는 중…' : '다음'}</span>
           </div>
         ) : (
           <div className="pm-tap" onClick={create} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', borderRadius: 18, padding: 17, boxShadow: '0 10px 24px rgba(0,0,0,.4)' }}>

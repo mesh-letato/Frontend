@@ -1,16 +1,15 @@
 import { useNav } from '../context/Nav';
-import { MY_SPACE } from '../data/mock';
 
 // 01 화면 하단 탭바 — 3버튼 구성 (내 지도 / + 추가 / 스페이스)
 export function TabBar({ active = 'space', onPlus }) {
-  const { go, reset } = useNav();
+  const { go, reset, mySpace } = useNav();
   const muted = '#6a6a70';
   const mineActive = active === 'myspace';
   const spaceActive = active === 'space';
   return (
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 90, zIndex: 40, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around', padding: '11px 14px 0', background: 'rgba(13,13,15,.82)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)', borderTop: '.5px solid rgba(255,255,255,.08)' }}>
       {/* 내 지도 (+ 좌측) */}
-      <div className="pm-tap" onClick={() => go('spaceMap', { space: MY_SPACE, mine: true })} style={col}>
+      <div className="pm-tap" onClick={() => mySpace && go('spaceMap', { space: mySpace, mine: true })} style={col}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" fill={mineActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={mineActive ? '#2997ff' : muted} strokeWidth="1.8" /></svg>
         <span style={{ font: `${mineActive ? 800 : 600} 10px/1 system-ui`, color: mineActive ? '#2997ff' : muted }}>내 지도</span>
       </div>

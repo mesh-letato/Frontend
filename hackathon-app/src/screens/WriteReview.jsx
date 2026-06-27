@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, HomeIndicator } from '../components/Chrome';
 import { placesSeongsu } from '../data/mock';
+import { reviewsApi } from '../api';
 
 const GRADS = [
   'radial-gradient(circle at 40% 30%,#ffe0bd,transparent),linear-gradient(150deg,#e89a5a,#7a2e22)',
@@ -9,6 +10,9 @@ const GRADS = [
   'radial-gradient(circle at 40% 30%,#ffd0db,transparent),linear-gradient(150deg,#f3a9b9,#a83a5a)',
   'radial-gradient(circle at 40% 30%,#d8e8c8,transparent),linear-gradient(150deg,#8aaa6a,#3e5a2e)',
 ];
+
+// 사진 없이 컬러만 선택했을 때 사용할 대체 이미지 URL (imageUrl 은 필수값)
+const PLACEHOLDER_IMAGE = 'https://placehold.co/600x600/png?text=PinMoa';
 
 export default function WriteReview({ place: placeProp, space }) {
   const { back, showToast } = useNav();
@@ -18,6 +22,8 @@ export default function WriteReview({ place: placeProp, space }) {
   const [grad, setGrad] = useState(GRADS[0]);
   const [caption, setCaption] = useState('');
   const [mode, setMode] = useState('visited'); // visited | want
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const onFile = (e) => {
     const f = e.target.files?.[0];
@@ -32,9 +38,38 @@ export default function WriteReview({ place: placeProp, space }) {
     setGrad(GRADS[Math.floor(Math.random() * GRADS.length)]);
   };
 
-  const submit = () => {
-    showToast(mode === 'visited' ? '후기를 올렸어요 📸' : '가고싶어요에 추가했어요 💙');
-    back();
+  const submit = async () => {
+    if (saving) return;
+    // '가고싶어요'는 백엔드 미지원 → 로컬 토스트만
+    if (mode !== 'visited') {
+      showToast('가고싶어요에 추가했어요 💙');
+      back();
+      return;
+    }
+    if (!caption.trim()) {
+      setError('한 줄 후기를 입력해주세요');
+      return;
+    }
+    if (!place?.id) {
+      setError('이 장소는 아직 저장되지 않아 후기를 올릴 수 없어요');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    try {
+      await reviewsApi.createReview({
+        placeId: place.id,
+        spaceId: space?.id,
+        imageUrl: photo || PLACEHOLDER_IMAGE,
+        content: caption.trim(),
+      });
+      showToast('후기를 올렸어요 📸');
+      back();
+    } catch (e) {
+      setError(e.message || '후기 작성에 실패했어요');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const photoStyle = photo
@@ -96,9 +131,10 @@ export default function WriteReview({ place: placeProp, space }) {
       </div>
 
       <div style={{ padding: '14px 20px 30px', background: 'linear-gradient(180deg,rgba(13,13,15,0),#0D0D0F 38%)' }}>
-        <div className="pm-tap" onClick={submit} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2997ff', borderRadius: 18, padding: 17, boxShadow: '0 12px 28px rgba(41,151,255,.36)' }}>
+        {error && <div style={{ marginBottom: 10, font: '600 12.5px/1.4 system-ui', color: '#ff7a7a' }}>{error}</div>}
+        <div className="pm-tap" onClick={submit} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#2997ff', borderRadius: 18, padding: 17, boxShadow: '0 12px 28px rgba(41,151,255,.36)', opacity: saving ? 0.6 : 1 }}>
           <span style={{ font: '700 17px/1 system-ui' }}>{mode === 'visited' ? '📸' : '💙'}</span>
-          <span style={{ font: '800 16px/1 system-ui', color: '#fff' }}>{mode === 'visited' ? '후기 올리기' : '가고싶어요 추가'}</span>
+          <span style={{ font: '800 16px/1 system-ui', color: '#fff' }}>{saving ? '올리는 중…' : mode === 'visited' ? '후기 올리기' : '가고싶어요 추가'}</span>
         </div>
       </div>
       <HomeIndicator />

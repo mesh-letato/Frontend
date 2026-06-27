@@ -1,16 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, HomeIndicator } from '../components/Chrome';
 import { TabBar } from '../components/TabBar';
-import { MY_SPACE } from '../data/mock';
+import { spacesApi } from '../api';
+
+// 스페이스 id 로 카드 배경색을 결정 (백엔드에 색 필드가 없어 클라이언트에서 파생)
+const CARD_COLORS = ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#2997FF', '#5E5CE6', '#AF52DE'];
+const cardBg = (id) => {
+  const hex = CARD_COLORS[Math.abs(Number(id) || 0) % CARD_COLORS.length];
+  return `radial-gradient(circle at 65% 30%,${hex}55,transparent 60%),linear-gradient(160deg,#241a14,#0f0a06)`;
+};
 
 export default function Spaces() {
-  const { go, reset, spaces, showToast } = useNav();
+  const { go, reset, logout, user, spaces, mySpace, refreshSpaces, showToast } = useNav();
   const [menu, setMenu] = useState(null); // 'plus' | 'profile' | null
   const [join, setJoin] = useState(false);
   const [link, setLink] = useState(false);
   const [search, setSearch] = useState(false);
-  const openMyMap = () => go('spaceMap', { space: MY_SPACE, mine: true });
+  const openMyMap = () => mySpace && go('spaceMap', { space: mySpace, mine: true });
+
+  // 초대 코드로 합류
+  const handleJoin = async (code) => {
+    const space = await spacesApi.joinSpace(code.trim());
+    await refreshSpaces();
+    showToast(`${space?.name || '스페이스'}에 참가했어요 🎉`);
+  };
+
+  // 화면 진입 시 최신 스페이스 동기화
+  useEffect(() => {
+    refreshSpaces();
+  }, [refreshSpaces]);
 
   return (
     <div style={{ position: 'absolute', inset: 0, background: '#0D0D0F', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -28,7 +47,16 @@ export default function Spaces() {
 
         {/* 스페이스 카드들 (친구들과 함께한 스페이스만) */}
         <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 16, padding: '0 16px' }}>
-          {spaces.map((sp) => <SpaceCard key={sp.id} sp={sp} onTap={() => go('spaceMap', { space: sp })} />)}
+          {spaces.length === 0 ? (
+            <div style={{ margin: '20px 6px', padding: '28px 20px', background: '#18181B', borderRadius: 22, textAlign: 'center' }}>
+              <div style={{ font: '700 15px/1.4 system-ui', color: '#fff' }}>아직 참여 중인 스페이스가 없어요</div>
+              <div style={{ marginTop: 8, font: '500 13px/1.5 system-ui', color: '#6a6a70' }}>+ 버튼으로 스페이스를 만들거나<br />친구 초대코드로 참여해보세요</div>
+            </div>
+          ) : (
+            spaces.map((sp) => (
+              <SpaceCard key={sp.id} sp={sp} onTap={() => go('spaceMap', { space: sp })} />
+            ))
+          )}
         </div>
       </div>
 
@@ -61,20 +89,20 @@ export default function Spaces() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 12px 14px' }}>
               <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(140deg,#5aa0ef,#0066cc)' }} />
               <div>
-                <div style={{ font: '800 17px/1 system-ui', color: '#fff' }}>나</div>
-                <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>@me</div>
+                <div style={{ font: '800 17px/1 system-ui', color: '#fff' }}>{user?.nickname || '나'}</div>
+                <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{user?.email || ''}</div>
               </div>
             </div>
             <div style={{ height: '.5px', background: 'rgba(255,255,255,.08)', margin: '0 12px 4px' }} />
             <MenuRow icon="🗺️" title="내 지도" sub="저장한 장소 모아보기" onClick={() => { setMenu(null); openMyMap(); }} />
             <MenuRow icon="✏️" title="프로필 편집" sub="이름·아이디·사진 변경" onClick={() => { setMenu(null); showToast('프로필 편집 (준비 중)'); }} />
-            <MenuRow icon="⚙️" title="계정 관리" sub="알림·보안·로그아웃" onClick={() => { setMenu(null); reset('login'); }} />
+            <MenuRow icon="⚙️" title="계정 관리" sub="알림·보안·로그아웃" onClick={() => { setMenu(null); logout(); }} />
           </div>
         </>
       )}
 
       {/* 참가 코드 모달 */}
-      {join && <JoinModal onClose={() => setJoin(false)} onJoin={() => { setJoin(false); showToast('스페이스에 참가했어요 🎉'); }} />}
+      {join && <JoinModal onClose={() => setJoin(false)} onJoin={handleJoin} />}
 
       {/* URL로 장소 추가 */}
       {link && <LinkModal onClose={() => setLink(false)} onSubmit={(url) => { setLink(false); go('linkAnalyzing', { url, target: 'myspace' }); }} />}
@@ -104,11 +132,11 @@ function MenuRow({ icon, title, sub, onClick }) {
 
 function SpaceCard({ sp, onTap }) {
   return (
-    <div className="pm-tap" onClick={onTap} style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', height: 168, background: sp.bg }}>
+    <div className="pm-tap" onClick={onTap} style={{ position: 'relative', borderRadius: 28, overflow: 'hidden', height: 168, background: cardBg(sp.id) }}>
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(13,13,15,.1) 40%,rgba(13,13,15,.92) 100%)' }} />
       <div style={{ position: 'absolute', left: 20, right: 20, bottom: 18 }}>
-        <div style={{ font: '800 24px/1 system-ui', letterSpacing: '-.7px', color: '#fff' }}>{sp.name}</div>
-        <div style={{ marginTop: 8, font: '600 13px/1 system-ui', color: 'rgba(255,255,255,.65)' }}>{sp.placeCount}곳 · 멤버 {sp.memberCount}명</div>
+        <div style={{ font: '800 24px/1 system-ui', letterSpacing: '-.7px', color: '#fff' }}>{sp.emoji ? `${sp.emoji} ` : ''}{sp.name}</div>
+        <div style={{ marginTop: 8, font: '600 13px/1 system-ui', color: 'rgba(255,255,255,.65)' }}>장소 {sp.placeCount ?? 0}곳 · 멤버 {sp.memberCount ?? 1}명</div>
       </div>
     </div>
   );
@@ -116,15 +144,33 @@ function SpaceCard({ sp, onTap }) {
 
 function JoinModal({ onClose, onJoin }) {
   const [code, setCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async () => {
+    if (!code.trim() || loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      await onJoin(code);
+      onClose();
+    } catch (e) {
+      setError(e.message || '참가에 실패했어요');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ position: 'absolute', inset: 0, zIndex: 130, background: 'rgba(0,0,0,.6)', backdropFilter: 'blur(12px)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }} onClick={onClose}>
       <div className="pm-up" onClick={(e) => e.stopPropagation()} style={{ background: '#1a1a1e', borderRadius: '28px 28px 0 0', padding: '22px 20px 44px' }}>
         <div style={{ width: 36, height: 4, borderRadius: 9999, background: 'rgba(255,255,255,.2)', margin: '0 auto 24px' }} />
         <div style={{ font: '800 24px/1 system-ui', letterSpacing: '-.7px', color: '#fff', marginBottom: 8 }}>스페이스 참여하기</div>
         <div style={{ font: '500 14px/1.5 system-ui', color: 'rgba(255,255,255,.5)', marginBottom: 22 }}>친구한테 스페이스 코드를 받으세요</div>
-        <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="참가 코드 입력 (예: SEONGSU2025)" style={{ width: '100%', background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 14, padding: '14px 16px', font: '600 15px/1 system-ui', color: '#fff', outline: 'none', textAlign: 'center', letterSpacing: '1px' }} />
-        <div className="pm-tap" onClick={() => code.trim() && onJoin()} style={{ marginTop: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', background: code.trim() ? '#0D0D0F' : '#2a2a2e', borderRadius: 16, padding: 16, transition: 'background .2s' }}>
-          <span style={{ font: '800 16px/1 system-ui', color: code.trim() ? '#fff' : '#6a6a70' }}>코드 전송</span>
+        <input value={code} onChange={(e) => setCode(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && submit()} placeholder="참가 코드 입력 (예: c130153e6e)" style={{ width: '100%', background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.14)', borderRadius: 14, padding: '14px 16px', font: '600 15px/1 system-ui', color: '#fff', outline: 'none', textAlign: 'center', letterSpacing: '1px' }} />
+        {error && <div style={{ marginTop: 12, font: '600 12.5px/1.4 system-ui', color: '#ff7a7a', textAlign: 'center' }}>{error}</div>}
+        <div className="pm-tap" onClick={submit} style={{ marginTop: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', background: code.trim() && !loading ? '#0D0D0F' : '#2a2a2e', borderRadius: 16, padding: 16, transition: 'background .2s' }}>
+          <span style={{ font: '800 16px/1 system-ui', color: code.trim() && !loading ? '#fff' : '#6a6a70' }}>{loading ? '참가 중…' : '코드 전송'}</span>
         </div>
       </div>
     </div>

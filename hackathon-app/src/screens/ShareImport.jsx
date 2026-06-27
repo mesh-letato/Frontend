@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
-import { mySpace, grad } from '../data/mock';
+import { grad } from '../data/mock';
+import { placesApi } from '../api';
+
+const shortCat = (c) => (c ? c.split(' > ').pop() : '장소');
 
 // 인스타 릴스 공유 → PWA 진입 → 어느 스페이스에 핀을 꽂을지 선택
 export default function ShareImport({ place }) {
-  const { back, reset, spaces, showToast } = useNav();
-  const p = place || { name: '미오 성수', cat: '이탈리안', addr: '서울 성동구 연무장길 33', g: grad.pasta };
+  const { back, reset, spaces, mySpace, showToast } = useNav();
+  const p = place || { name: '미오 성수', category: '이탈리안', address: '서울 성동구 연무장길 33' };
+
   // 내 스페이스는 기본 선택(고정), 참여 스페이스는 토글
-  const [picked, setPicked] = useState(() => new Set(['my']));
+  const [picked, setPicked] = useState(() => new Set(mySpace ? [mySpace.id] : []));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const toggle = (id) => setPicked((s) => {
     const n = new Set(s);
@@ -16,14 +22,33 @@ export default function ShareImport({ place }) {
     return n;
   });
 
-  const confirm = () => {
-    showToast(`${picked.size}개 스페이스에 핀을 꽂았어요 📌`);
-    reset('spaces');
+  const confirm = async () => {
+    if (saving || picked.size === 0) return;
+    setSaving(true);
+    setError('');
+    try {
+      await placesApi.savePlace({
+        kakaoPlaceId: String(p.kakaoPlaceId),
+        name: p.name,
+        category: p.category || null,
+        address: p.roadAddress || p.address || null,
+        latitude: p.latitude,
+        longitude: p.longitude,
+        thumbnailUrl: null,
+        spaceIds: [...picked],
+      });
+      showToast(`${picked.size}개 스페이스에 핀을 꽂았어요 📌`);
+      reset('spaces');
+    } catch (e) {
+      setError(e.message || '저장에 실패했어요');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const allSpaces = [
-    { id: 'my', name: mySpace.name, sub: '나만의 공간 · 기본 저장', locked: true, emoji: '🗺️' },
-    ...spaces.map((s) => ({ id: s.id, name: s.name, sub: `${s.placeCount}곳 · 멤버 ${s.memberCount}`, emoji: s.emoji })),
+    ...(mySpace ? [{ id: mySpace.id, name: mySpace.name, sub: '나만의 공간 · 기본 저장', locked: true, emoji: mySpace.emoji || '🗺️' }] : []),
+    ...spaces.map((s) => ({ id: s.id, name: s.name, sub: '함께 모으는 스페이스', emoji: s.emoji || '📍' })),
   ];
 
   return (
@@ -45,11 +70,11 @@ export default function ShareImport({ place }) {
 
         {/* 확인된 장소 카드 */}
         <div style={{ margin: '16px 20px 0', display: 'flex', gap: 13, background: '#18181B', borderRadius: 20, padding: 14 }}>
-          <div style={{ width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.g || grad.pasta }} />
+          <div style={{ width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: grad.pasta }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ font: '800 17px/1.1 system-ui', color: '#fff' }}>{p.name}</div>
-            <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.addr}</div>
-            <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#2997ff" strokeWidth="2" /><circle cx="12" cy="12" r="4.5" stroke="#2997ff" strokeWidth="2" /></svg><span style={{ font: '600 11px/1 system-ui', color: '#2997ff' }}>@seongsu.foodie 릴스에서 가져옴</span></div>
+            <div style={{ marginTop: 5, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{shortCat(p.category)} · {p.roadAddress || p.address}</div>
+            <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 5 }}><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="#2997ff" strokeWidth="2" /><circle cx="12" cy="12" r="4.5" stroke="#2997ff" strokeWidth="2" /></svg><span style={{ font: '600 11px/1 system-ui', color: '#2997ff' }}>릴스에서 가져옴</span></div>
           </div>
         </div>
 
@@ -78,9 +103,10 @@ export default function ShareImport({ place }) {
       </div>
 
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '14px 20px 30px', background: 'linear-gradient(180deg,rgba(13,13,15,0),#0D0D0F 38%)' }}>
-        <div className="pm-tap" onClick={confirm} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff', borderRadius: 18, padding: 17, boxShadow: '0 10px 24px rgba(0,0,0,.4)' }}>
+        {error && <div style={{ marginBottom: 10, font: '600 12.5px/1.4 system-ui', color: '#ff7a7a' }}>{error}</div>}
+        <div className="pm-tap" onClick={confirm} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: '#fff', borderRadius: 18, padding: 17, boxShadow: '0 10px 24px rgba(0,0,0,.4)', opacity: saving || picked.size === 0 ? 0.6 : 1 }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" fill="#0D0D0F" /></svg>
-          <span style={{ font: '800 16px/1 system-ui', color: '#0D0D0F' }}>확인</span>
+          <span style={{ font: '800 16px/1 system-ui', color: '#0D0D0F' }}>{saving ? '저장 중…' : '확인'}</span>
         </div>
       </div>
       <HomeIndicator />
