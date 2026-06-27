@@ -6,18 +6,29 @@ import { DetailTabs } from '../components/TabBar';
 import { ManageBtn, MemberManageModal } from '../components/SpaceHeader';
 import { grad } from '../data/mock';
 import { placesApi, spacesApi } from '../api';
-import { toAvatar } from '../utils/member';
+import { toAvatar, memberColor } from '../utils/member';
 
 const THUMBS = [grad.pasta, grad.cafe, grad.pink, grad.green];
 const shortCat = (c) => (c ? c.split(' > ').pop() : '장소');
 const DEFAULT_CENTER = { lat: 37.5445, lng: 127.0558 }; // 성수 인근 기본 중심
 
+// 멤버 색상 커스텀 핀 (카카오맵 기본 파란 마커 대체) — 저장한 사람의 색으로 꽂힘
+function makePinImage(kakaoMaps, color, big = false) {
+  const w = big ? 42 : 34;
+  const h = big ? 54 : 44;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 34 44'><path d='M17 42.5S3.5 26.5 3.5 15a13.5 13.5 0 1 1 27 0c0 11.5-13.5 27.5-13.5 27.5z' fill='${color}' stroke='#fff' stroke-width='2.6' stroke-linejoin='round'/><circle cx='17' cy='15' r='5.2' fill='#fff'/></svg>`;
+  const src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+  return new kakaoMaps.MarkerImage(src, new kakaoMaps.Size(w, h), { offset: new kakaoMaps.Point(w / 2, h) });
+}
+
 export default function SpaceDetailMap({ space, mine = false }) {
   const { back, go, replace, user } = useNav();
   const [places, setPlaces] = useState([]);
   const [members, setMembers] = useState([]);
+  const [colors, setColors] = useState({}); // placeId → 저장자 멤버색
   const [selected, setSelected] = useState(0);
   const [manage, setManage] = useState(false);
+  const myColor = memberColor(user?.id);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
@@ -43,6 +54,26 @@ export default function SpaceDetailMap({ space, mine = false }) {
       .catch((e) => console.error('멤버 로드 실패', e));
     return () => { cancelled = true; };
   }, [space?.id, mine]);
+
+  // 공유 스페이스: 장소별 저장자 색 로드 (내 지도는 전부 내 색)
+  useEffect(() => {
+    if (mine || !places.length) return;
+    let cancelled = false;
+    Promise.all(
+      places.map((p) =>
+        placesApi
+          .getPlaceSavers(p.id)
+          .then((r) => [p.id, r?.savers?.[0]?.userId != null ? memberColor(r.savers[0].userId) : null])
+          .catch(() => [p.id, null])
+      )
+    ).then((entries) => {
+      if (cancelled) return;
+      const m = {};
+      entries.forEach(([id, c]) => { if (c) m[id] = c; });
+      setColors(m);
+    });
+    return () => { cancelled = true; };
+  }, [places, mine]);
 
   // 지도 초기화 + 마커 렌더
   useEffect(() => {
@@ -71,12 +102,13 @@ export default function SpaceDetailMap({ space, mine = false }) {
             .filter((p) => p.latitude != null && p.longitude != null)
             .map((pin, index) => {
               const position = new kakaoMaps.LatLng(Number(pin.latitude), Number(pin.longitude));
-              const marker = new kakaoMaps.Marker({ map, position, title: pin.name });
+              const color = mine ? myColor : (colors[pin.id] || myColor);
+              const marker = new kakaoMaps.Marker({ map, position, title: pin.name, image: makePinImage(kakaoMaps, color, index === selected) });
               const infoWindow = new kakaoMaps.InfoWindow({
                 content: `<div style="padding:7px 10px;font-size:12px;font-weight:700;color:#111;">${pin.name}</div>`,
               });
               kakaoMaps.event.addListener(marker, 'click', () => setSelected(index));
-              return { marker, infoWindow, index };
+              return { marker, infoWindow, index, placeId: pin.id };
             });
 
           if (markersRef.current.length) {
@@ -102,18 +134,22 @@ export default function SpaceDetailMap({ space, mine = false }) {
     };
   }, [places]);
 
-  // 선택 변경 시 해당 마커로 이동 + 인포윈도우
+  // 선택/색 변경 시 핀 색·강조 갱신 + 해당 마커로 이동 + 인포윈도우
   useEffect(() => {
     if (!mapInstanceRef.current || !window.kakao?.maps) return;
+    const kakaoMaps = window.kakao.maps;
     const map = mapInstanceRef.current;
     const target = places[selected];
-    if (!target || target.latitude == null) return;
-    map.panTo(new window.kakao.maps.LatLng(Number(target.latitude), Number(target.longitude)));
-    markersRef.current.forEach(({ marker, infoWindow, index }) => {
+    if (target && target.latitude != null) {
+      map.panTo(new kakaoMaps.LatLng(Number(target.latitude), Number(target.longitude)));
+    }
+    markersRef.current.forEach(({ marker, infoWindow, index, placeId }) => {
+      const color = mine ? myColor : (colors[placeId] || myColor);
+      marker.setImage(makePinImage(kakaoMaps, color, index === selected));
       if (index === selected) infoWindow.open(map, marker);
       else infoWindow.close();
     });
-  }, [selected, places]);
+  }, [selected, places, colors, mine, myColor]);
 
   const sel = places[selected];
 
