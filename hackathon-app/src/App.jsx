@@ -14,6 +14,7 @@ import WriteReview from './screens/WriteReview';
 import FriendLogDetail from './screens/FriendLogDetail';
 import LinkAnalyzing from './screens/LinkAnalyzing';
 import PlaceSelect from './screens/PlaceSelect';
+import SearchPlaceMap from './screens/SearchPlaceMap';
 import ShareImport from './screens/ShareImport';
 
 const SCREENS = {
@@ -30,6 +31,7 @@ const SCREENS = {
   friendLog: FriendLogDetail,
   linkAnalyzing: LinkAnalyzing,
   placeSelect: PlaceSelect,
+  searchPlaceMap: SearchPlaceMap,
   shareImport: ShareImport,
 };
 
