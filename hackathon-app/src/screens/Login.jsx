@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, HomeIndicator } from '../components/Chrome';
+import kakaoLogin from '../assets/kakao_login.png';
 
 export default function Login() {
   const { reset, go } = useNav();
@@ -39,7 +40,10 @@ export default function Login() {
           <div style={{ flex: 1, height: '.5px', background: 'rgba(255,255,255,.12)' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-          <Social bg="#FEE500" color="#191600" label="카카오로 시작하기" onClick={() => reset('spaces')} icon="K" />
+          {/* 노란 컨테이너는 애플 버튼과 동일한 전체 폭 규격, 로고+글씨(이미지)는 원본 크기 유지 */}
+          <div className="pm-tap" onClick={() => reset('spaces')} style={{ width: '100%', background: '#FEE500', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1px 0' }}>
+            <img src={kakaoLogin} alt="카카오 로그인" style={{ width: 183, height: 45, display: 'block' }} />
+          </div>
           <Social bg="#fff" color="#191600" label="Apple로 시작하기" onClick={() => reset('spaces')} icon="" />
         </div>
       </div>
