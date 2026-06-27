@@ -1,36 +1,29 @@
 import { useNav } from '../context/Nav';
+import { MY_SPACE } from '../data/mock';
 
-// 01 화면 하단 탭바 (스페이스 / + 추가 / 알림 / 프로필)
-export function TabBar({ active = 'space', onPlus, onProfile }) {
-  const { reset } = useNav();
+// 01 화면 하단 탭바 — 3버튼 구성 (내 지도 / + 추가 / 스페이스)
+export function TabBar({ active = 'space', onPlus }) {
+  const { go, reset } = useNav();
   const muted = '#6a6a70';
+  const mineActive = active === 'myspace';
+  const spaceActive = active === 'space';
   return (
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 90, zIndex: 40, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-around', padding: '11px 14px 0', background: 'rgba(13,13,15,.82)', backdropFilter: 'blur(20px) saturate(160%)', WebkitBackdropFilter: 'blur(20px) saturate(160%)', borderTop: '.5px solid rgba(255,255,255,.08)' }}>
-      {/* 내 지도 */}
-      <div className="pm-tap" onClick={() => reset('myspace')} style={col}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" stroke={muted} strokeWidth="1.8" /></svg>
-        <span style={{ font: `600 10px/1 system-ui`, color: muted }}>내 지도</span>
+      {/* 내 지도 (+ 좌측) */}
+      <div className="pm-tap" onClick={() => go('spaceMap', { space: MY_SPACE, mine: true })} style={col}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.5-7-11a4.5 4.5 0 0 1 7-3.7A4.5 4.5 0 0 1 19 10c0 5.5-7 11-7 11Z" fill={mineActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={mineActive ? '#2997ff' : muted} strokeWidth="1.8" /></svg>
+        <span style={{ font: `${mineActive ? 800 : 600} 10px/1 system-ui`, color: mineActive ? '#2997ff' : muted }}>내 지도</span>
       </div>
-      {/* 스페이스 */}
-      <div className="pm-tap" onClick={() => reset('spaces')} style={col}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="6.2" fill={active === 'space' ? '#2997ff' : 'none'} fillOpacity=".25" stroke={active === 'space' ? '#2997ff' : muted} strokeWidth="1.9" /><circle cx="15" cy="12" r="6.2" fill={active === 'space' ? '#2997ff' : 'none'} fillOpacity=".25" stroke={active === 'space' ? '#2997ff' : muted} strokeWidth="1.9" /></svg>
-        <span style={{ font: `${active === 'space' ? 800 : 600} 10px/1 system-ui`, color: active === 'space' ? '#2997ff' : muted }}>스페이스</span>
-      </div>
-      {/* + 추가 */}
+      {/* + 추가 (가운데) */}
       <div className="pm-tap" onClick={onPlus} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ width: 52, height: 38, borderRadius: 15, background: '#2997ff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 18px rgba(41,151,255,.4)', marginTop: -2 }}>
+        <div style={{ width: 56, height: 40, borderRadius: 16, background: '#2997ff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 18px rgba(41,151,255,.4)', marginTop: -2 }}>
           <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" /></svg>
         </div>
       </div>
-      {/* 알림 */}
-      <div className="pm-tap" style={col}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9Z" stroke={muted} strokeWidth="1.8" strokeLinejoin="round" /><path d="M10.5 21a2 2 0 0 0 3 0" stroke={muted} strokeWidth="1.8" strokeLinecap="round" /></svg>
-        <span style={{ font: `600 10px/1 system-ui`, color: muted }}>알림</span>
-      </div>
-      {/* 프로필 */}
-      <div className="pm-tap" onClick={onProfile} style={col}>
-        <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'linear-gradient(140deg,#5aa0ef,#0066cc)' }} />
-        <span style={{ font: `600 10px/1 system-ui`, color: muted }}>프로필</span>
+      {/* 스페이스 (+ 우측) */}
+      <div className="pm-tap" onClick={() => reset('spaces')} style={col}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="6.2" fill={spaceActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={spaceActive ? '#2997ff' : muted} strokeWidth="1.9" /><circle cx="15" cy="12" r="6.2" fill={spaceActive ? '#2997ff' : 'none'} fillOpacity=".25" stroke={spaceActive ? '#2997ff' : muted} strokeWidth="1.9" /></svg>
+        <span style={{ font: `${spaceActive ? 800 : 600} 10px/1 system-ui`, color: spaceActive ? '#2997ff' : muted }}>스페이스</span>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { spaceLogs, members } from '../data/mock';
 // 한 줄 리뷰 최대 20자 제한
 const clip = (s) => (s.length > 20 ? s.slice(0, 20) + '…' : s);
 
-export default function SpaceLog({ space }) {
+export default function SpaceLog({ space, mine = false }) {
   const { go, replace } = useNav();
 
   return (
@@ -15,8 +15,8 @@ export default function SpaceLog({ space }) {
       <Notch />
       <StatusBar />
       <div style={{ flexShrink: 0 }}>
-        <SpaceHeaderTop space={space} />
-        <DetailTabs active="log" hasNew onMap={() => replace('spaceMap', { space })} onList={() => replace('spaceList', { space })} onLog={() => {}} />
+        <SpaceHeaderTop space={space} mine={mine} />
+        <DetailTabs active="log" hasNew onMap={() => replace('spaceMap', { space, mine })} onList={() => replace('spaceList', { space, mine })} onLog={() => {}} />
         <div style={{ padding: '16px 20px 6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ font: '700 12px/1 system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>최신순</span>
           <span style={{ font: '600 11.5px/1 system-ui', color: '#6a6a70' }}>후기 {spaceLogs.length}개</span>

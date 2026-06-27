@@ -4,13 +4,23 @@ import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
 import { members, nextId } from '../data/mock';
 
 const DEFAULT_NAME = '새 스페이스';
-const EMOJIS = ['🍝', '☕', '🏖️', '🍻', '🎨', '🌃', '🍰', '🛍️'];
+// 대표 색 (빨주노초파남보) — 나중에 지도 핀 색으로 사용
+const COLORS = [
+  { key: '빨', hex: '#FF3B30' },
+  { key: '주', hex: '#FF9500' },
+  { key: '노', hex: '#FFCC00' },
+  { key: '초', hex: '#34C759' },
+  { key: '파', hex: '#2997FF' },
+  { key: '남', hex: '#5E5CE6' },
+  { key: '보', hex: '#AF52DE' },
+];
+const cardBg = (hex) => `radial-gradient(circle at 42% 28%,${hex}3a,transparent 62%),linear-gradient(160deg,#17171b,#0a0a0d)`;
 
 export default function CreateSpace() {
   const { back, reset, addSpace, showToast } = useNav();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
-  const [emoji, setEmoji] = useState('🍝');
+  const [color, setColor] = useState(COLORS[0].hex);
   const [copied, setCopied] = useState(false);
 
   const named = name.trim().length > 0;
@@ -26,9 +36,8 @@ export default function CreateSpace() {
 
   const create = () => {
     addSpace({
-      id: nextId(), name: `${displayName} ${emoji}`, emoji, placeCount: 0, memberCount: 1,
-      overlap: 0, avatars: ['me'], extra: 0,
-      bg: 'radial-gradient(circle at 40% 30%,#2e3a4a,transparent 60%),linear-gradient(160deg,#1c2430,#0a0d12)',
+      id: nextId(), name: displayName, color, placeCount: 0, memberCount: 1,
+      bg: cardBg(color),
     });
     showToast('새 스페이스를 만들었어요 ✨');
     reset('spaces');
@@ -57,11 +66,11 @@ export default function CreateSpace() {
         {step === 1 ? (
           <div className="pm-fade">
             <div style={{ padding: '26px 20px 0', font: '800 24px/1.2 system-ui', letterSpacing: '-.7px', color: '#fff' }}>어떤 곳을 모을까요?</div>
-            <div style={{ padding: '8px 20px 0', font: '500 14px/1.4 system-ui', color: 'rgba(255,255,255,.5)' }}>스페이스 이름과 이모지를 정해주세요</div>
+            <div style={{ padding: '8px 20px 0', font: '500 14px/1.4 system-ui', color: 'rgba(255,255,255,.5)' }}>스페이스 이름과 대표 색을 정해주세요</div>
 
             <div style={{ padding: '24px 20px 0', font: '700 13px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>스페이스 이름</div>
             <div style={{ margin: '10px 20px 0', display: 'flex', alignItems: 'center', gap: 12, background: '#18181B', borderRadius: 18, padding: '14px 16px' }}>
-              <div style={{ width: 42, height: 42, borderRadius: 13, background: 'linear-gradient(140deg,#f0a868,#d2603e)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 20px/1 system-ui' }}>{emoji}</div>
+              <div style={{ width: 42, height: 42, borderRadius: 13, background: color, boxShadow: `0 4px 12px ${color}66` }} />
               <input
                 value={name} onChange={(e) => setName(e.target.value)} placeholder={DEFAULT_NAME}
                 style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', font: '800 19px/1 system-ui', letterSpacing: '-.4px', color: named ? '#fff' : '#6a6a70' }}
@@ -69,11 +78,17 @@ export default function CreateSpace() {
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 14l5-2 9-9 2 2-9 9-2 5-1-1-3-1Z" stroke="rgba(255,255,255,.45)" strokeWidth="1.8" strokeLinejoin="round" /></svg>
             </div>
 
-            <div style={{ padding: '24px 20px 0', font: '700 13px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>이모지 선택</div>
-            <div style={{ margin: '12px 20px 0', display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-              {EMOJIS.map((e) => (
-                <div key={e} className="pm-tap" onClick={() => setEmoji(e)} style={{ width: 52, height: 52, borderRadius: 15, background: emoji === e ? 'rgba(41,151,255,.18)' : '#18181B', border: emoji === e ? '2px solid #2997ff' : '2px solid transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '400 24px/1 system-ui' }}>{e}</div>
-              ))}
+            <div style={{ padding: '24px 20px 0', font: '700 13px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>대표 색 선택</div>
+            <div style={{ padding: '5px 20px 0', font: '500 12px/1.4 system-ui', color: '#6a6a70' }}>지도에서 이 스페이스의 핀 색으로 표시돼요</div>
+            <div style={{ margin: '14px 20px 0', display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+              {COLORS.map((c) => {
+                const on = color === c.hex;
+                return (
+                  <div key={c.hex} className="pm-tap" onClick={() => setColor(c.hex)} style={{ width: 44, height: 44, borderRadius: '50%', background: c.hex, display: 'flex', alignItems: 'center', justifyContent: 'center', border: on ? '3px solid #fff' : '3px solid transparent', boxShadow: on ? `0 6px 16px ${c.hex}88` : 'none', transition: 'all .15s' }}>
+                    {on && <svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="3.2" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
@@ -81,7 +96,7 @@ export default function CreateSpace() {
             {/* step1 recap */}
             <div style={{ padding: '20px 20px 0', font: '700 13px/1 system-ui', color: 'rgba(255,255,255,.5)' }}>스페이스 이름</div>
             <div style={{ margin: '10px 20px 0', display: 'flex', alignItems: 'center', gap: 12, background: '#18181B', borderRadius: 18, padding: '14px 16px' }}>
-              <div style={{ width: 42, height: 42, borderRadius: 13, background: 'linear-gradient(140deg,#f0a868,#d2603e)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 20px/1 system-ui' }}>{emoji}</div>
+              <div style={{ width: 42, height: 42, borderRadius: 13, background: color, boxShadow: `0 4px 12px ${color}66` }} />
               <span style={{ font: '800 19px/1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{displayName}</span>
             </div>
 

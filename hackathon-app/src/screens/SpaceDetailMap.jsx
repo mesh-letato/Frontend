@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator, Avatar } from '../components/Chrome';
 import { DetailTabs } from '../components/TabBar';
+import { ManageBtn, MemberManageModal } from '../components/SpaceHeader';
 import { placesSeongsu, members } from '../data/mock';
 
 // 폴라로이드 핀 데이터 (위치는 와이어프레임 기준 — 402x874 좌표를 % 로 환산)
@@ -17,9 +18,10 @@ const DOTS = [
   { left: '82%', top: '37%', color: '#5e8a4e', size: 22 },
 ];
 
-export default function SpaceDetailMap({ space }) {
+export default function SpaceDetailMap({ space, mine = false }) {
   const { back, go, replace, showToast } = useNav();
   const [selected, setSelected] = useState(0); // 기본 첫 핀 선택
+  const [manage, setManage] = useState(false);
 
   const sel = PINS[selected];
 
@@ -48,10 +50,17 @@ export default function SpaceDetailMap({ space }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
           <BackBtn onClick={back} />
           <div style={{ flex: 1, font: '800 17px/1 system-ui', letterSpacing: '-.4px', color: '#fff' }}>{space?.name || '성수 맛집 🍝'}</div>
-          <div style={{ display: 'flex' }}>
-            {['me', 'jiyoon', 'doyoon'].map((k, i) => <Avatar key={k} m={members[k]} size={28} border="#18181B" ml={i === 0 ? 0 : -9} />)}
-            <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 system-ui', color: '#fff' }}>+2</div>
-          </div>
+          {mine ? (
+            <Avatar m={members.me} size={28} border="#18181B" />
+          ) : (
+            <>
+              <div style={{ display: 'flex' }}>
+                {['me', 'jiyoon', 'doyoon'].map((k, i) => <Avatar key={k} m={members[k]} size={28} border="#18181B" ml={i === 0 ? 0 : -9} />)}
+                <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #18181B', background: '#2a2a2e', marginLeft: -9, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 system-ui', color: '#fff' }}>+2</div>
+              </div>
+              <ManageBtn onClick={() => setManage(true)} />
+            </>
+          )}
         </div>
         {/* legend */}
         <div style={{ marginTop: 11, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -67,7 +76,7 @@ export default function SpaceDetailMap({ space }) {
       </div>
 
       {/* 토글 */}
-      <DetailTabs floating active="map" onMap={() => {}} onList={() => replace('spaceList', { space })} onLog={() => replace('spaceLog', { space })} />
+      <DetailTabs floating active="map" onMap={() => {}} onList={() => replace('spaceList', { space, mine })} onLog={() => replace('spaceLog', { space, mine })} />
 
       {/* 폴라로이드 핀들 */}
       {PINS.map((pin, i) => {
@@ -130,6 +139,7 @@ export default function SpaceDetailMap({ space }) {
           </div>
         </div>
       )}
+      {manage && <MemberManageModal space={space} onClose={() => setManage(false)} />}
       <HomeIndicator />
     </div>
   );

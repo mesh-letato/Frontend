@@ -77,22 +77,25 @@ export const mySpace = {
   ],
 };
 
+// 내 지도 (하단 네비 좌측 버튼 → 타 스페이스 상세와 동일한 화면으로 진입)
+export const MY_SPACE = { id: 0, name: '내 지도', mine: true, memberCount: 1 };
+
 // 참가 중인 스페이스 목록 (01 화면)
 export const initialSpaces = [
   {
     id: 1, name: '성수 맛집 🍝', emoji: '🍝', placeCount: 18, reviewCount: 7, memberCount: 5,
-    overlap: 7, isNew: true, newText: '방금 지윤이 후기 올림', big: true,
+    overlap: 7, isNew: true, newText: '방금 지윤이 후기 올림', big: true, code: 'SEONGSU24',
     avatars: ['me', 'jiyoon', 'doyoon'], extra: 2,
     bg: 'radial-gradient(circle at 65% 30%,#5a3a2a,transparent 60%),linear-gradient(160deg,#3a2418,#0f0a06)',
     polaroid: { g: 'radial-gradient(circle at 35% 30%,#ffd9a8,transparent),linear-gradient(150deg,#f0a868,#9a3a2e)', cap: '미오 파스타 🤤' },
   },
   {
-    id: 2, name: '여름 MT 🏖️', emoji: '🏖️', placeCount: 11, memberCount: 6, overlap: 3,
+    id: 2, name: '여름 MT 🏖️', emoji: '🏖️', placeCount: 11, memberCount: 6, overlap: 3, code: 'SUMMER25',
     avatars: ['me'], extra: 3, gradAvatars: ['#f0a868', '#6b5b95'],
     bg: 'radial-gradient(circle at 30% 30%,#2e4a2a,transparent 60%),linear-gradient(160deg,#24351c,#0a0d07)',
   },
   {
-    id: 3, name: '카페 투어 ☕', emoji: '☕', placeCount: 24, memberCount: 4, overlap: 5,
+    id: 3, name: '카페 투어 ☕', emoji: '☕', placeCount: 24, memberCount: 4, overlap: 5, code: 'CAFETOUR7',
     avatars: ['me', 'seoa'], extra: 2,
     bg: 'radial-gradient(circle at 40% 30%,#3a2e4a,transparent 60%),linear-gradient(160deg,#2a2238,#0c0a10)',
   },

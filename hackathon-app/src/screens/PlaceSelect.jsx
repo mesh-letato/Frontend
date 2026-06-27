@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
-import { placeCandidates, nextId, grad } from '../data/mock';
+import { placeCandidates, nextId, grad, MY_SPACE } from '../data/mock';
 
 export default function PlaceSelect({ target }) {
   const { back, reset, go, saveToMySpace, showToast } = useNav();
@@ -14,10 +14,11 @@ export default function PlaceSelect({ target }) {
       go('shareImport', { place: c });
       return;
     }
-    // 내 스페이스에 저장
+    // 내 지도에 저장 → 저장 직후 내 지도 리스트로 이동 (방금 저장한 장소 노출)
     saveToMySpace({ id: nextId(), name: c.name, cat: c.cat, area: c.addr.split(' · ')[0], thumb: c.g || grad.pasta, isNew: true });
-    showToast('내 스페이스에 저장했어요 📍');
-    reset('myspace');
+    showToast('내 지도에 저장했어요 📍');
+    reset('spaces');
+    go('spaceList', { space: MY_SPACE, mine: true });
   };
 
   return (

@@ -4,8 +4,8 @@ import { SpaceHeaderTop } from '../components/SpaceHeader';
 import { DetailTabs } from '../components/TabBar';
 import { placesSeongsu, members } from '../data/mock';
 
-export default function SpaceDetailList({ space }) {
-  const { go, replace } = useNav();
+export default function SpaceDetailList({ space, mine = false }) {
+  const { go, replace, myPlaces } = useNav();
 
   return (
     <div style={{ position: 'absolute', inset: 0, background: '#0D0D0F', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -13,23 +13,41 @@ export default function SpaceDetailList({ space }) {
       <StatusBar />
       {/* 고정 영역 */}
       <div style={{ flexShrink: 0 }}>
-        <SpaceHeaderTop space={space} />
+        <SpaceHeaderTop space={space} mine={mine} />
         <DetailTabs
           active="list"
-          onMap={() => replace('spaceMap', { space })}
+          onMap={() => replace('spaceMap', { space, mine })}
           onList={() => {}}
-          onLog={() => replace('spaceLog', { space })}
+          onLog={() => replace('spaceLog', { space, mine })}
         />
-        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>🔥 많이 겹친 순</div>
+        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>{mine ? '📍 최근 저장순' : '🔥 많이 겹친 순'}</div>
       </div>
 
       {/* 스크롤 영역 (장소들만) */}
       <div className="pm-scroll" style={{ flex: 1, padding: '0 20px 30px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
-          {placesSeongsu.map((p, idx) => <PlaceRow key={p.id} p={p} hot={idx === 0} onTap={() => go('placeDetail', { place: p, space })} />)}
+          {mine
+            ? myPlaces.map((p) => <MyPlaceRow key={p.id} p={p} onTap={() => go('placeDetail', { place: { ...p, addr: p.area, rating: '4.7' }, space })} />)
+            : placesSeongsu.map((p, idx) => <PlaceRow key={p.id} p={p} hot={idx === 0} onTap={() => go('placeDetail', { place: p, space })} />)}
         </div>
       </div>
       <HomeIndicator />
+    </div>
+  );
+}
+
+// 내 지도 전용 단순 장소 행 (저장한 장소)
+function MyPlaceRow({ p, onTap }) {
+  return (
+    <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
+      <div style={{ position: 'relative', width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.thumb }}>
+        {p.count && <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 10px/1 system-ui', color: '#fff' }}>{p.count}명</div>}
+        {p.isNew && <div style={{ position: 'absolute', right: -4, top: -6, background: '#30d158', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 9px/1 system-ui', color: '#0D0D0F' }}>NEW</div>}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ font: '800 16px/1.1 system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
+        <div style={{ marginTop: 4, font: '500 12px/1 system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
+      </div>
     </div>
   );
 }
