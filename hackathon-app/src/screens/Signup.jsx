@@ -1,19 +1,34 @@
 import { useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
+import { authApi } from '../api';
 
 export default function Signup() {
-  const { back, reset, showToast } = useNav();
+  const { back, reset, onAuthenticated, showToast } = useNav();
   const [name, setName] = useState('');
-  const [id, setId] = useState('');
+  const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [agree, setAgree] = useState(false);
-  const valid = name.trim() && id.trim() && pw.trim() && agree;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const valid = name.trim() && email.trim() && pw.trim().length >= 8 && agree;
 
-  const submit = () => {
-    if (!valid) return;
-    showToast('내 스페이스가 자동으로 만들어졌어요 ✨');
-    reset('spaces');
+  const submit = async () => {
+    if (!valid || loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      await authApi.signup({ email: email.trim(), password: pw, nickname: name.trim() });
+      // 가입 직후 자동 로그인 → 내 스페이스 보장 + 스페이스 로드
+      await authApi.login({ email: email.trim(), password: pw });
+      await onAuthenticated();
+      showToast('내 스페이스가 자동으로 만들어졌어요 ✨');
+      reset('spaces');
+    } catch (e) {
+      setError(e.message || '회원가입에 실패했어요');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,7 +47,7 @@ export default function Signup() {
 
         <div style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 14 }}>
           <Field label="닉네임" value={name} onChange={setName} placeholder="지도에 표시될 이름" />
-          <Field label="아이디" value={id} onChange={setId} placeholder="영문·숫자 4자 이상" prefix="@" />
+          <Field label="이메일" value={email} onChange={setEmail} placeholder="example@pinmoa.com" type="email" />
           <Field label="비밀번호" value={pw} onChange={setPw} placeholder="8자 이상" type="password" />
         </div>
 
@@ -47,8 +62,9 @@ export default function Signup() {
       </div>
 
       <div style={{ padding: '14px 24px 34px' }}>
-        <div className="pm-tap" onClick={submit} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: valid ? '#fff' : '#2a2a2e', borderRadius: 18, padding: 17, transition: 'background .2s', boxShadow: valid ? '0 10px 24px rgba(0,0,0,.4)' : 'none' }}>
-          <span style={{ font: '800 16px/1 Pinmoa, system-ui', color: valid ? '#0D0D0F' : '#6a6a70' }}>가입하고 시작하기</span>
+        {error && <div style={{ marginBottom: 12, font: '600 12.5px/1.4 Pinmoa, system-ui', color: '#ff7a7a' }}>{error}</div>}
+        <div className="pm-tap" onClick={submit} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: valid && !loading ? '#fff' : '#2a2a2e', borderRadius: 18, padding: 17, transition: 'background .2s', boxShadow: valid ? '0 10px 24px rgba(0,0,0,.4)' : 'none' }}>
+          <span style={{ font: '800 16px/1 Pinmoa, system-ui', color: valid && !loading ? '#0D0D0F' : '#6a6a70' }}>{loading ? '가입 중…' : '가입하고 시작하기'}</span>
         </div>
       </div>
       <HomeIndicator />

@@ -2,12 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, BackBtn, HomeIndicator } from '../components/Chrome';
 import { loadKakaoMapSdk } from '../utils/kakaoMap';
-import { MY_SPACE, nextId, grad } from '../data/mock';
 
 const DEFAULT_QUERY = '미오 성수';
 
 export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
-  const { back, reset, go, saveToMySpace, showToast } = useNav();
+  const { back, go } = useNav();
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
@@ -150,17 +149,17 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
 
   const handleSave = () => {
     if (!selectedPlace) return;
-    saveToMySpace({
-      id: nextId(),
-      name: selectedPlace.name,
-      cat: selectedPlace.category.split(' > ').pop() || '장소',
-      area: selectedPlace.address.split(' ').slice(0, 2).join(' ') || selectedPlace.address,
-      thumb: grad.pasta,
-      isNew: true,
+    // 바로 저장하지 않고, 어느 스페이스(들)에 담을지 선택하는 화면으로 이동
+    go('shareImport', {
+      place: {
+        kakaoPlaceId: String(selectedPlace.id),
+        name: selectedPlace.name,
+        category: selectedPlace.category || null,
+        address: selectedPlace.address || null,
+        latitude: selectedPlace.lat,
+        longitude: selectedPlace.lng,
+      },
     });
-    showToast('내 지도에 저장했어요 📍');
-    reset('spaces');
-    go('spaceList', { space: MY_SPACE, mine: true });
   };
 
   return (
@@ -202,7 +201,7 @@ export default function SearchPlaceMap({ initialQuery = DEFAULT_QUERY }) {
           ) : null}
 
           <button type="button" onClick={handleSave} disabled={!selectedPlace} style={{ marginTop: 12, width: '100%', border: 'none', borderRadius: 16, padding: '13px 0', background: selectedPlace ? '#fff' : 'rgba(255,255,255,.15)', color: selectedPlace ? '#0D0D0F' : '#8d8d95', font: '800 15px/1 Pinmoa, system-ui' }}>
-            내 스페이스에 저장
+            스페이스 선택하고 저장
           </button>
         </div>
       </div>

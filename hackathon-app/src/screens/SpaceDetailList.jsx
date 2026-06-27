@@ -1,11 +1,34 @@
+import { useEffect, useState } from 'react';
 import { useNav } from '../context/Nav';
 import { Notch, StatusBar, HomeIndicator } from '../components/Chrome';
 import { SpaceHeaderTop } from '../components/SpaceHeader';
 import { DetailTabs } from '../components/TabBar';
-import { placesSeongsu, members } from '../data/mock';
+import { grad } from '../data/mock';
+import { placesApi } from '../api';
+
+const THUMBS = [grad.pasta, grad.cafe, grad.pink, grad.green];
+const shortCat = (c) => (c ? c.split(' > ').pop() : '장소');
+const shortArea = (addr) => (addr ? addr.split(' ').slice(0, 3).join(' ') : '');
 
 export default function SpaceDetailList({ space, mine = false }) {
-  const { go, replace, myPlaces } = useNav();
+  const { go, replace } = useNav();
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!space?.id) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    placesApi
+      .getPlacesBySpace(space.id)
+      .then((data) => { if (!cancelled) setPlaces(data); })
+      .catch((e) => { if (!cancelled) console.error('장소 목록 로드 실패', e); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [space?.id]);
 
   return (
     <div style={{ position: 'absolute', inset: 0, background: '#0D0D0F', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -13,113 +36,59 @@ export default function SpaceDetailList({ space, mine = false }) {
       <StatusBar />
       {/* 고정 영역 */}
       <div style={{ flexShrink: 0 }}>
-        <SpaceHeaderTop space={space} mine={mine} />
+        <SpaceHeaderTop space={space} mine={mine} placeCount={places.length} />
         <DetailTabs
           active="list"
           onMap={() => replace('spaceMap', { space, mine })}
           onList={() => {}}
           onLog={() => replace('spaceLog', { space, mine })}
         />
-        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 Pinmoa, system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>{mine ? '📍 최근 저장순' : '🔥 많이 겹친 순'}</div>
+        <div style={{ padding: '16px 20px 6px', font: '700 12px/1 Pinmoa, system-ui', letterSpacing: '.3px', color: '#6a6a70' }}>📍 최근 저장순</div>
       </div>
 
       {/* 스크롤 영역 (장소들만) */}
       <div className="pm-scroll" style={{ flex: 1, padding: '0 20px 30px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
-          {mine
-            ? myPlaces.map((p) => <MyPlaceRow key={p.id} p={p} onTap={() => go('placeDetail', { place: { ...p, addr: p.area, rating: '4.7' }, space })} />)
-            : placesSeongsu.map((p, idx) => <PlaceRow key={p.id} p={p} hot={idx === 0} onTap={() => go('placeDetail', { place: p, space })} />)}
-        </div>
+        {loading ? (
+          <div style={{ padding: '40px 0', textAlign: 'center', font: '600 13px/1 Pinmoa, system-ui', color: '#6a6a70' }}>불러오는 중…</div>
+        ) : places.length === 0 ? (
+          <div style={{ margin: '24px 0', padding: '28px 20px', background: '#18181B', borderRadius: 22, textAlign: 'center' }}>
+            <div style={{ font: '700 15px/1.4 Pinmoa, system-ui', color: '#fff' }}>아직 저장한 장소가 없어요</div>
+            <div style={{ marginTop: 8, font: '500 13px/1.5 Pinmoa, system-ui', color: '#6a6a70' }}>릴스 링크나 검색으로 장소를 추가해보세요</div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+            {places.map((p, idx) => (
+              <PlaceRow key={p.id} p={p} thumb={THUMBS[idx % THUMBS.length]} onTap={() => go('placeDetail', { place: mapToDetail(p, THUMBS[idx % THUMBS.length]), space })} />
+            ))}
+          </div>
+        )}
       </div>
       <HomeIndicator />
     </div>
   );
 }
 
-// 내 지도 전용 단순 장소 행 (저장한 장소)
-function MyPlaceRow({ p, onTap }) {
-  return (
-    <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
-      <div style={{ position: 'relative', width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.thumb }}>
-        {p.count && <div style={{ position: 'absolute', left: -4, top: -6, background: '#2997ff', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 10px/1 Pinmoa, system-ui', color: '#fff' }}>{p.count}명</div>}
-        {p.isNew && <div style={{ position: 'absolute', right: -4, top: -6, background: '#30d158', border: '2px solid #18181B', borderRadius: 9999, padding: '2px 7px', font: '800 9px/1 Pinmoa, system-ui', color: '#0D0D0F' }}>NEW</div>}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ font: '800 16px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-        <div style={{ marginTop: 4, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
-      </div>
-    </div>
-  );
+// PlaceResponse → PlaceDetail 이 기대하는 형태로 변환
+function mapToDetail(p, thumb) {
+  return {
+    id: p.id,
+    name: p.name,
+    cat: shortCat(p.category),
+    area: shortArea(p.address),
+    addr: p.address,
+    thumb,
+    lat: p.latitude != null ? Number(p.latitude) : undefined,
+    lng: p.longitude != null ? Number(p.longitude) : undefined,
+  };
 }
 
-function PlaceRow({ p, hot, onTap }) {
-  const saverAvatars = p.savers.map((k) => members[k]);
-  // 사진 후기가 있는 hot 카드
-  if (hot) {
-    return (
-      <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, boxShadow: '0 0 0 1.5px rgba(41,151,255,.4)' }}>
-        <div style={{ display: 'flex', gap: 13 }}>
-          <Thumb p={p} size={72} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '800 17px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-            <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
-            <div style={{ marginTop: 9, display: 'flex', alignItems: 'center', gap: 7 }}>
-              <div style={{ display: 'flex' }}>{saverAvatars.map((m, i) => <div key={i} style={{ width: 20, height: 20, borderRadius: '50%', border: '1.5px solid #18181B', background: m.color, marginLeft: i === 0 ? 0 : -6 }} />)}</div>
-              <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
-            </div>
-          </div>
-        </div>
-        {/* 후기 strip */}
-        <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 9, background: '#0D0D0F', borderRadius: 14, padding: '9px 11px' }}>
-          <div style={{ width: 34, height: 34, borderRadius: 8, background: 'radial-gradient(circle at 40% 30%,#ffe0bd,transparent),linear-gradient(150deg,#e89a5a,#7a2e22)', flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '700 12px/1.2 Pinmoa, system-ui', color: '#fff' }}>{p.reviewer}이 다녀왔어요</div>
-            <div style={{ marginTop: 3, font: "600 11.5px/1.2 Pinmoa, system-ui", color: 'rgba(255,255,255,.65)' }}>{p.review}</div>
-          </div>
-          <span style={{ font: '700 17px/1 Pinmoa, system-ui' }}>📸</span>
-        </div>
-      </div>
-    );
-  }
-  // 일반 카드 (2명 이상)
-  if (p.count > 1) {
-    return (
-      <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13 }}>
-        <div style={{ display: 'flex', gap: 13 }}>
-          <Thumb p={p} size={72} blue={false} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ font: '800 17px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-            <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
-            <div style={{ marginTop: 9, display: 'flex', alignItems: 'center', gap: 7 }}>
-              <div style={{ display: 'flex' }}>{saverAvatars.map((m, i) => <div key={i} style={{ width: 20, height: 20, borderRadius: '50%', border: '1.5px solid #18181B', background: m.color, marginLeft: i === 0 ? 0 : -6 }} />)}</div>
-              <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: 'rgba(255,255,255,.5)' }}>{p.saverText}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  // 단일 저장 카드
+function PlaceRow({ p, thumb, onTap }) {
   return (
     <div className="pm-tap" onClick={onTap} style={{ background: '#18181B', borderRadius: 22, padding: 13, display: 'flex', gap: 13, alignItems: 'center' }}>
-      <div style={{ width: 60, height: 60, borderRadius: 14, flexShrink: 0, background: p.thumb }} />
+      <div style={{ width: 60, height: 60, borderRadius: 15, flexShrink: 0, background: p.thumbnailUrl ? `center/cover url(${p.thumbnailUrl})` : thumb }} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ font: '800 16px/1.1 Pinmoa, system-ui', letterSpacing: '-.3px', color: '#fff' }}>{p.name}</div>
-        <div style={{ marginTop: 5, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.cat} · {p.area}</div>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-        <div style={{ width: 22, height: 22, borderRadius: '50%', background: members.doyoon.color, display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 9px/1 Pinmoa, system-ui', color: '#fff' }}>도윤</div>
-        <span style={{ font: '700 11px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{p.count}명</span>
-      </div>
-    </div>
-  );
-}
-
-function Thumb({ p, size }) {
-  return (
-    <div style={{ position: 'relative', width: size, height: size, borderRadius: 16, flexShrink: 0, background: p.thumb }}>
-      <div style={{ position: 'absolute', left: -4, top: -6, background: p.count >= 4 ? '#2997ff' : '#1c1c20', border: '2px solid #18181B', borderRadius: 9999, padding: '3px 8px' }}>
-        <span style={{ font: '800 11px/1 Pinmoa, system-ui', color: '#fff' }}>{p.count}명</span>
+        <div style={{ marginTop: 4, font: '500 12px/1 Pinmoa, system-ui', color: '#6a6a70' }}>{shortCat(p.category)}{p.address ? ` · ${shortArea(p.address)}` : ''}</div>
       </div>
     </div>
   );
